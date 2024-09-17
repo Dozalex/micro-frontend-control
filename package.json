@@ -1,0 +1,64 @@
+{
+  "name": "micro-frontend-control",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "Alex Dozmorov",
+  "private": true,
+  "main": "dist-electron/main/main.js",
+  "type": "module",
+  "scripts": {
+    "prepare": "husky install",
+    "dev": "vite",
+    "build": "tsc && vite build && electron-builder",
+    "lint:ts": "tsc --noEmit",
+    "lint:eslint": "eslint './**/*.{ts,tsx}' --fix",
+    "lint:prettier": "prettier './**/*.{ts,tsx}' --write",
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:ts"
+  },
+  "engines": {
+    "node": ">=18.12.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "bash -c tsc --noEmit",
+      "eslint --fix --quiet",
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@dozalex/eslint-config": "^0.0.1",
+    "@dozalex/prettier-config": "^0.0.1",
+    "@dozalex/stylelint-config": "^0.0.1",
+    "@rushstack/eslint-patch": "^1.10.2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "dotenv": "^16.4.5",
+    "electron": "^31.1.0",
+    "electron-builder": "^24.13.3",
+    "electron-reload": "^2.0.0-alpha.1",
+    "fix-path": "^4.0.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^13.0.3",
+    "postcss": "^8.4.39",
+    "prettier": "^3.3.2",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.2",
+    "vite-plugin-electron": "^0.28.7",
+    "vite-plugin-electron-renderer": "^0.14.5",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.2"
+  }
+}

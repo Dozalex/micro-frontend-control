@@ -1,0 +1,9 @@
+{
+  "appId": "dozalex.micro-frontend-control",
+  "productName": "Micro-frontend control",
+  "files": ["dist/**/*", "dist-electron/**/*"],
+  "asar": true,
+  "mac": {
+    "target": "dmg"
+  }
+}
