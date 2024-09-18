@@ -1,8 +1,10 @@
 export const ACTION = {
   openFolderDialog: 'openFolderDialog',
   showAlert: 'showAlert',
-  getFileContent: 'getFileContent',
-  changeFileContent: 'changeFileContent',
+  readFile: 'readFile',
+  writeFile: 'writeFile',
+  deleteFile: 'deleteFile',
   getChildFolderNames: 'getChildFolderNames',
   runCommand: 'runCommand',
+  getUserDataPath: 'getUserDataPath',
 } as const;

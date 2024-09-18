@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Trash } from 'icons';
-import { DependencyName, DependencyVersion, GitSettings } from 'modules';
+import { DependencyName, DependencyVersion, SpaceConfig } from 'modules';
 import { Button } from 'components/Button';
 import { IconButton } from 'components/IconButton';
 import { Input } from 'components/Input';
@@ -11,9 +11,9 @@ import { TableColumnHeader } from 'components/TableColumnHeader';
 import { LatestVersion } from './components';
 
 type Props = {
-  gitSettings: GitSettings;
-  deps: DependencyName[];
-  setDeps: React.Dispatch<React.SetStateAction<DependencyName[]>>;
+  dependencyConfig: SpaceConfig['dependencyConfig'];
+  deps: SpaceConfig['dependencyNames'];
+  onChangeDependencyNames: (value: SpaceConfig['dependencyNames']) => void;
   depVersions: Record<DependencyName, DependencyVersion | undefined>;
   setDepVersions: React.Dispatch<
     React.SetStateAction<Record<DependencyName, DependencyVersion | undefined>>
@@ -22,11 +22,15 @@ type Props = {
 
 export const Deps = ({
   deps,
-  setDeps,
+  onChangeDependencyNames,
   depVersions,
   setDepVersions,
-  gitSettings,
+  dependencyConfig,
 }: Props) => {
+  const onAdd = () => {
+    onChangeDependencyNames([...deps, '']);
+  };
+
   const onChangeDep = ({
     index,
     newName,
@@ -34,11 +38,11 @@ export const Deps = ({
     index: number;
     newName: string;
   }) => {
-    setDeps(prev => prev.toSpliced(index, 1, newName));
+    onChangeDependencyNames(deps.toSpliced(index, 1, newName));
   };
 
-  const onAdd = () => {
-    setDeps(prev => [...prev, '']);
+  const onDelete = (index: number) => {
+    onChangeDependencyNames(deps.toSpliced(index, 1));
   };
 
   const onChangeVersion = ({
@@ -54,12 +58,9 @@ export const Deps = ({
     }));
   };
 
-  const onDelete = (index: number) => {
-    setDeps(prev => prev.toSpliced(index, 1));
-  };
-
   const latestDepVersionPath =
-    gitSettings.showLatestDepVersion && gitSettings.latestDepVersionPath;
+    dependencyConfig.showLatestDepVersion &&
+    dependencyConfig.latestDepVersionPath;
 
   return (
     <Section title='Followed dependencies'>

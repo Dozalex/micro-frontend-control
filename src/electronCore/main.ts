@@ -119,7 +119,7 @@ ipcMain.handle(ACTION.showAlert, (_event, options: MessageBoxOptions) => {
   return dialog.showMessageBox(mainWindow, options);
 });
 
-ipcMain.handle(ACTION.getFileContent, async (_event, path: string) => {
+ipcMain.handle(ACTION.readFile, async (_event, path: string) => {
   try {
     return await fs.readFile(path, 'utf8');
   } catch (error) {
@@ -129,7 +129,7 @@ ipcMain.handle(ACTION.getFileContent, async (_event, path: string) => {
 });
 
 ipcMain.handle(
-  ACTION.changeFileContent,
+  ACTION.writeFile,
   async (_event, path: string, content: string) => {
     try {
       return await fs.writeFile(path, content, 'utf8');
@@ -139,6 +139,15 @@ ipcMain.handle(
     }
   },
 );
+
+ipcMain.handle(ACTION.deleteFile, async (_event, path: string) => {
+  try {
+    await fs.unlink(path);
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    throw error;
+  }
+});
 
 ipcMain.handle(ACTION.getChildFolderNames, async (_event, path: string) => {
   try {
@@ -177,3 +186,5 @@ ipcMain.handle(
       });
     }),
 );
+
+ipcMain.handle(ACTION.getUserDataPath, () => app.getPath('userData'));

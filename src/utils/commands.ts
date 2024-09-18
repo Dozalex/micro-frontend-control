@@ -1,10 +1,20 @@
-import { DependencyName, DependencyVersion, PackageJson } from 'modules';
+import type { DependencyName, DependencyVersion, PackageJson } from 'modules';
 
 import { replaceVersionInPackageJson } from './versions';
 
+export const getUserDataPath = async () => {
+  try {
+    return await window.electronAPI.getUserDataPath();
+  } catch (err) {
+    console.error('Failed to get user data path', err);
+
+    throw err;
+  }
+};
+
 export const getPackageJsonText = async ({ path }: { path: string }) => {
   try {
-    return await window.electronAPI.getFileContent(`${path}/package.json`);
+    return await window.electronAPI.readFile(`${path}/package.json`);
   } catch (err) {
     console.error(`Failed to get package.json by path ${path}`, err);
 
@@ -14,7 +24,7 @@ export const getPackageJsonText = async ({ path }: { path: string }) => {
 
 export const getPackageJsonObject = async ({ path }: { path: string }) => {
   try {
-    const fileContent = await window.electronAPI.getFileContent(
+    const fileContent = await window.electronAPI.readFile(
       `${path}/package.json`,
     );
 
@@ -55,10 +65,7 @@ export const updatePackageJson = async ({
   packageJsonText: string;
 }) => {
   try {
-    await window.electronAPI.changeFileContent(
-      `${path}/package.json`,
-      packageJsonText,
-    );
+    await window.electronAPI.writeFile(`${path}/package.json`, packageJsonText);
   } catch (err) {
     console.error(`Failed to update package.json by path ${path}`, err);
 

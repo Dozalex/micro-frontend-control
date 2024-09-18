@@ -1,12 +1,17 @@
 import * as React from 'react';
 
-import { ProjectPath, DependencyName, DependencyVersion } from 'modules';
+import {
+  ProjectPath,
+  DependencyName,
+  DependencyVersion,
+  SpaceConfig,
+} from 'modules';
 
 import { Project } from './components';
 
 type Props = {
-  projects: ProjectPath[];
-  setProjects: React.Dispatch<React.SetStateAction<ProjectPath[]>>;
+  projects: SpaceConfig['projectPaths'];
+  onChangeProjectPaths: (value: SpaceConfig['projectPaths']) => void;
   projectsForUpdate: ProjectPath[];
   setProjectsForUpdate: React.Dispatch<React.SetStateAction<ProjectPath[]>>;
   deps: DependencyName[];
@@ -22,11 +27,11 @@ export const Projects = ({
   setProjectsForUpdate,
   projectsForUpdate,
   depVersions,
-  setProjects,
+  onChangeProjectPaths,
   statusByProject,
 }: Props) => {
   const onDelete = (projectPath: string) => {
-    setProjects(prev => prev.filter(path => path !== projectPath));
+    onChangeProjectPaths(projects.filter(path => path !== projectPath));
   };
 
   return (

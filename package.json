@@ -12,7 +12,7 @@
     "build": "tsc && vite build && electron-builder",
     "lint:ts": "tsc --noEmit",
     "lint:eslint": "eslint './**/*.{ts,tsx}' --fix",
-    "lint:prettier": "prettier './**/*.{ts,tsx}' --write",
+    "lint:prettier": "prettier './**/*.{ts,tsx}' -w --log-level error",
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:ts"
   },
   "engines": {
@@ -22,13 +22,14 @@
     "*.{ts,tsx}": [
       "bash -c tsc --noEmit",
       "eslint --fix --quiet",
-      "prettier --write"
+      "prettier -w --log-level error"
     ]
   },
   "dependencies": {
     "debounce": "^2.1.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
@@ -42,6 +43,7 @@
     "@types/debounce": "^3.0.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "@vitejs/plugin-react": "^4.3.1",

@@ -1,11 +1,6 @@
 import * as React from 'react';
 
-import {
-  DependencyName,
-  DependencyVersion,
-  GitSettings,
-  PipelineSettings,
-} from 'modules';
+import { DependencyName, DependencyVersion, SpaceConfig } from 'modules';
 import {
   getPackageJsonText,
   getProjectPackageFolderNames,
@@ -28,8 +23,8 @@ type Props = {
   depVersions: Record<DependencyName, DependencyVersion | undefined>;
   projectsForUpdate: string[];
   packagesFolderName: string;
-  gitSettings: GitSettings;
-  pipelineSettings: PipelineSettings;
+  gitConfig: SpaceConfig['gitConfig'];
+  pipelineConfig: SpaceConfig['pipelineConfig'];
   setStatusByProject: React.Dispatch<
     React.SetStateAction<Record<string, string | undefined>>
   >;
@@ -40,8 +35,8 @@ export const RunButton = ({
   depVersions,
   projectsForUpdate,
   packagesFolderName,
-  gitSettings,
-  pipelineSettings,
+  gitConfig,
+  pipelineConfig,
   setStatusByProject,
 }: Props) => {
   const [inProgress, setInProgress] = React.useState(false);
@@ -72,8 +67,8 @@ export const RunButton = ({
 
     setInProgress(true);
 
-    const { commitMessage, newBranchName, remoteBranchName } = gitSettings;
-    const { makeCommit, makePush } = pipelineSettings;
+    const { commitMessage, newBranchName, remoteBranchName } = gitConfig;
+    const { makeCommit, makePush } = pipelineConfig;
 
     // loop through each selected project
     await Promise.allSettled(

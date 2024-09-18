@@ -1,3 +1,2 @@
+export * from './config';
 export * from './data';
-export * from './gitSettings';
-export * from './pipelineSettings';

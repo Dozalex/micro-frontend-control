@@ -1,3 +1,1 @@
-export * from './useDeps';
-export * from './useProjects';
-export * from './usePackagesFolderName';
+export * from './useData';

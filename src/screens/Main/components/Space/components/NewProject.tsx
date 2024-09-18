@@ -1,14 +1,14 @@
 import * as React from 'react';
 
-import { ProjectPath } from 'modules';
+import { SpaceConfig } from 'modules';
 import { Button } from 'components/Button';
 
 type Props = {
-  projects: ProjectPath[];
-  setProjects: React.Dispatch<React.SetStateAction<ProjectPath[]>>;
+  projects: SpaceConfig['projectPaths'];
+  onChangeProjectPaths: (value: SpaceConfig['projectPaths']) => void;
 };
 
-export const NewProject = ({ projects, setProjects }: Props) => {
+export const NewProject = ({ projects, onChangeProjectPaths }: Props) => {
   const onAdd = async () => {
     const filePaths = await window.electronAPI.openFolderDialog();
     const path = filePaths[0];
@@ -26,7 +26,7 @@ export const NewProject = ({ projects, setProjects }: Props) => {
       return;
     }
 
-    setProjects([...projects, path]);
+    onChangeProjectPaths([...projects, path]);
   };
 
   return (

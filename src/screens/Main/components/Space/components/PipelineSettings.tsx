@@ -1,20 +1,18 @@
 import * as React from 'react';
 
-import { PipelineSettings as PipelineSettingsType } from 'modules';
+import { SpaceConfig } from 'modules';
 import { Button } from 'components/Button';
 import { Checkbox } from 'components/Checkbox';
 import { Modal } from 'components/Modal';
 
 type Props = {
-  pipelineSettings: PipelineSettingsType;
-  setPipelineSettings: React.Dispatch<
-    React.SetStateAction<PipelineSettingsType>
-  >;
+  pipelineConfig: SpaceConfig['pipelineConfig'];
+  onChangePipelineConfig: (value: SpaceConfig['pipelineConfig']) => void;
 };
 
 export const PipelineSettings = ({
-  pipelineSettings: settings,
-  setPipelineSettings,
+  pipelineConfig: settings,
+  onChangePipelineConfig,
 }: Props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -28,10 +26,10 @@ export const PipelineSettings = ({
             label='Make commit'
             checked={settings.makeCommit}
             onChange={newChecked =>
-              setPipelineSettings(prev => ({
-                ...prev,
+              onChangePipelineConfig({
+                ...settings,
                 makeCommit: newChecked,
-              }))
+              })
             }
           />
 
@@ -39,10 +37,10 @@ export const PipelineSettings = ({
             label='Make push'
             checked={settings.makePush}
             onChange={newChecked =>
-              setPipelineSettings(prev => ({
-                ...prev,
+              onChangePipelineConfig({
+                ...settings,
                 makePush: newChecked,
-              }))
+              })
             }
           />
         </Modal>

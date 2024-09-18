@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { GitSettings as GitSettingsType } from 'modules';
+import { SpaceConfig } from 'modules';
 import { Button } from 'components/Button';
 import { Checkbox } from 'components/Checkbox';
 import { Input } from 'components/Input';
@@ -8,11 +8,18 @@ import { Modal } from 'components/Modal';
 import { Textarea } from 'components/Textarea';
 
 type Props = {
-  gitSettings: GitSettingsType;
-  setGitSettings: React.Dispatch<React.SetStateAction<GitSettingsType>>;
+  gitConfig: SpaceConfig['gitConfig'];
+  onChangeGitConfig: (value: SpaceConfig['gitConfig']) => void;
+  dependencyConfig: SpaceConfig['dependencyConfig'];
+  onChangeDependencyConfig: (value: SpaceConfig['dependencyConfig']) => void;
 };
 
-export const GitSettings = ({ gitSettings, setGitSettings }: Props) => {
+export const GitSettings = ({
+  gitConfig,
+  dependencyConfig,
+  onChangeGitConfig,
+  onChangeDependencyConfig,
+}: Props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const onChangeLatestDepVersionPath = async () => {
@@ -21,10 +28,10 @@ export const GitSettings = ({ gitSettings, setGitSettings }: Props) => {
 
     if (!path) return;
 
-    setGitSettings(prev => ({
-      ...prev,
+    onChangeDependencyConfig({
+      ...dependencyConfig,
       latestDepVersionPath: path,
-    }));
+    });
   };
 
   return (
@@ -35,53 +42,53 @@ export const GitSettings = ({ gitSettings, setGitSettings }: Props) => {
         <Modal onClose={() => setIsOpen(false)} title='Git settings'>
           <Input
             label='New branch name'
-            value={gitSettings.newBranchName}
+            value={gitConfig.newBranchName}
             onChange={e =>
-              setGitSettings(prev => ({
-                ...prev,
+              onChangeGitConfig({
+                ...gitConfig,
                 newBranchName: e.target.value,
-              }))
+              })
             }
           />
 
           <Input
             label='Remote branch name'
-            value={gitSettings.remoteBranchName}
+            value={gitConfig.remoteBranchName}
             onChange={e =>
-              setGitSettings(prev => ({
-                ...prev,
+              onChangeGitConfig({
+                ...gitConfig,
                 remoteBranchName: e.target.value,
-              }))
+              })
             }
           />
 
           <Textarea
             label='Commit message'
-            value={gitSettings.commitMessage}
+            value={gitConfig.commitMessage}
             onChange={e =>
-              setGitSettings(prev => ({
-                ...prev,
+              onChangeGitConfig({
+                ...gitConfig,
                 commitMessage: e.target.value,
-              }))
+              })
             }
             rows={4}
           />
 
           <Checkbox
             label='Show latest dependency version'
-            checked={!!gitSettings.showLatestDepVersion}
+            checked={dependencyConfig.showLatestDepVersion}
             onChange={checked =>
-              setGitSettings(prev => ({
-                ...prev,
+              onChangeDependencyConfig({
+                ...dependencyConfig,
                 showLatestDepVersion: checked,
-              }))
+              })
             }
           />
 
-          {gitSettings.showLatestDepVersion && (
+          {dependencyConfig.showLatestDepVersion && (
             <Input
               label='Path to request latest dependency version'
-              value={gitSettings.latestDepVersionPath}
+              value={dependencyConfig.latestDepVersionPath}
               onClick={onChangeLatestDepVersionPath}
               onKeyUp={e => {
                 if (e.key === 'Enter') {
