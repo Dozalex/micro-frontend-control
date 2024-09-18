@@ -26,6 +26,7 @@
     ]
   },
   "dependencies": {
+    "debounce": "^2.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -38,6 +39,7 @@
     "@dozalex/prettier-config": "^0.0.1",
     "@dozalex/stylelint-config": "^0.0.1",
     "@rushstack/eslint-patch": "^1.10.2",
+    "@types/debounce": "^3.0.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",

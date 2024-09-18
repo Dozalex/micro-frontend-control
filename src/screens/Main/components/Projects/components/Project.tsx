@@ -21,7 +21,7 @@ type Props = {
   packagesFolderName: string;
   projectsForUpdate: ProjectPath[];
   setProjectsForUpdate: React.Dispatch<React.SetStateAction<ProjectPath[]>>;
-  depVersions: Record<DependencyName, DependencyVersion>;
+  depVersions: Record<DependencyName, DependencyVersion | undefined>;
   onDelete: (path: string) => void;
 };
 

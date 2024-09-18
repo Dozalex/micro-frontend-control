@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { GitSettings as GitSettingsType } from 'modules';
 import { Button } from 'components/Button';
+import { Checkbox } from 'components/Checkbox';
 import { Input } from 'components/Input';
 import { Modal } from 'components/Modal';
 import { Textarea } from 'components/Textarea';
@@ -13,6 +14,18 @@ type Props = {
 
 export const GitSettings = ({ gitSettings, setGitSettings }: Props) => {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const onChangeLatestDepVersionPath = async () => {
+    const filePaths = await window.electronAPI.openFolderDialog();
+    const path = filePaths[0];
+
+    if (!path) return;
+
+    setGitSettings(prev => ({
+      ...prev,
+      latestDepVersionPath: path,
+    }));
+  };
 
   return (
     <React.Fragment>
@@ -53,6 +66,31 @@ export const GitSettings = ({ gitSettings, setGitSettings }: Props) => {
             }
             rows={4}
           />
+
+          <Checkbox
+            label='Show latest dependency version'
+            checked={!!gitSettings.showLatestDepVersion}
+            onChange={checked =>
+              setGitSettings(prev => ({
+                ...prev,
+                showLatestDepVersion: checked,
+              }))
+            }
+          />
+
+          {gitSettings.showLatestDepVersion && (
+            <Input
+              label='Path to request latest dependency version'
+              value={gitSettings.latestDepVersionPath}
+              onClick={onChangeLatestDepVersionPath}
+              onKeyUp={e => {
+                if (e.key === 'Enter') {
+                  onChangeLatestDepVersionPath();
+                }
+              }}
+              readOnly
+            />
+          )}
         </Modal>
       )}
     </React.Fragment>

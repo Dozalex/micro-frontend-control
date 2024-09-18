@@ -16,7 +16,7 @@ export const Section = ({
   <div className='grid gap-1'>
     <div className='flex items-center justify-between overflow-hidden'>
       <div
-        className={`grow overflow-ellipsis whitespace-nowrap overflow-hidden text-gray-200 ${onTitleClick ? 'hover:text-sky-400 focus:outline-none focus:text-sky-500' : ''}`}
+        className={`grow overflow-ellipsis whitespace-nowrap overflow-hidden text-gray-200 ${onTitleClick ? 'hover:text-sky-400 focus:outline-none focus-visible:text-sky-500' : ''}`}
         role={onTitleClick ? 'button' : undefined}
         tabIndex={onTitleClick ? 0 : -1}
         onClick={onTitleClick}

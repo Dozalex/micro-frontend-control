@@ -16,7 +16,7 @@ const saveValue = (data: GitSettings) => {
 };
 
 export const useGitSettings = () => {
-  const [gitSettings, setGitSettings] = React.useState({
+  const [gitSettings, setGitSettings] = React.useState<GitSettings>({
     // do spread for a future settings
     ...DEFAULT_GIT_SETTING,
     ...getValue(),

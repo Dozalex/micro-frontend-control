@@ -4,7 +4,7 @@ import { DependencyVersion } from 'modules';
 
 type Props = {
   depName: string;
-  newVersion: DependencyVersion;
+  newVersion: DependencyVersion | undefined;
   version: DependencyVersion;
 };
 

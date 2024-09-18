@@ -11,7 +11,7 @@ type Props = {
   setProjectsForUpdate: React.Dispatch<React.SetStateAction<ProjectPath[]>>;
   deps: DependencyName[];
   packagesFolderName: string;
-  depVersions: Record<DependencyName, DependencyVersion>;
+  depVersions: Record<DependencyName, DependencyVersion | undefined>;
   statusByProject: Record<string, string | undefined>;
 };
 

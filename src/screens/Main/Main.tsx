@@ -34,7 +34,7 @@ export const Main = () => {
     [],
   );
   const [depVersions, setDepVersions] = React.useState<
-    Record<DependencyName, DependencyVersion>
+    Record<DependencyName, DependencyVersion | undefined>
   >({});
   const [statusByProject, setStatusByProject] = React.useState<
     Record<string, string | undefined>
@@ -72,6 +72,7 @@ export const Main = () => {
         setDeps={setDeps}
         depVersions={depVersions}
         setDepVersions={setDepVersions}
+        gitSettings={gitSettings}
       />
 
       <Section title='Project settings'>

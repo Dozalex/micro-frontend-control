@@ -13,7 +13,7 @@ export const Checkbox = ({ checked, label, onChange }: Props) => (
         type='checkbox'
         value=''
         checked={checked}
-        className='w-4 h-4 bg-gray-100 border-gray-300 rounded accent-sky-700 focus:outline-none focus:ring-sky-800 focus:ring-4'
+        className='w-4 h-4 bg-gray-100 border-gray-300 rounded accent-sky-700 focus:outline-none focus-visible:ring-sky-800 focus-visible:ring-4'
         onChange={() => onChange(!checked)}
       />
 

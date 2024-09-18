@@ -80,7 +80,7 @@ export const replaceDepsInPackageJson = async ({
   path: string;
   packageJsonText: string;
   deps: DependencyName[];
-  depVersions: Record<DependencyName, DependencyVersion>;
+  depVersions: Record<DependencyName, DependencyVersion | undefined>;
 }): Promise<boolean> => {
   let newPackageJsonText = packageJsonText;
 
@@ -258,6 +258,30 @@ export const runLint = async ({
     });
   } catch (err) {
     console.error(`Failed to lint by path ${path}`, err);
+
+    throw err;
+  }
+};
+
+/** get last dependency version in registry */
+export const getLastDependencyVersion = async ({
+  path,
+  depName,
+}: {
+  // the project root path
+  path: string;
+  depName: string;
+}) => {
+  try {
+    return await window.electronAPI.runCommand({
+      path,
+      command: `yarn info ${depName} version`,
+    });
+  } catch (err) {
+    console.error(
+      `Failed to get last package version of ${depName} by path ${path}`,
+      err,
+    );
 
     throw err;
   }

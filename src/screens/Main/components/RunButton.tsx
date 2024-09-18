@@ -25,7 +25,7 @@ import { Button } from 'components/Button';
 
 type Props = {
   deps: DependencyName[];
-  depVersions: Record<DependencyName, DependencyVersion>;
+  depVersions: Record<DependencyName, DependencyVersion | undefined>;
   projectsForUpdate: string[];
   packagesFolderName: string;
   gitSettings: GitSettings;

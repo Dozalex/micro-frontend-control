@@ -1,4 +1,4 @@
-export * from './Deps';
+export * from './Deps/Deps';
 export * from './GitSettings';
 export * from './PipelineSettings';
 export * from './NewProject';
