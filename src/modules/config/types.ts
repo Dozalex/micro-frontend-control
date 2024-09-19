@@ -10,11 +10,14 @@ export type GitConfig = {
 };
 
 export type PipelineConfig = {
+  makeLint: boolean;
   makeCommit: boolean;
   makePush: boolean;
 };
 
 export type SpaceConfig = {
+  // for migrations
+  configVersionNumber: number;
   id: string;
   name: string;
   dependencyNames: string[];

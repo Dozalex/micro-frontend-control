@@ -1,10 +1,16 @@
 import { v4 as uuid } from 'uuid';
 
+import { SPACE_CONFIG_VERSION } from './constants';
 import { SpaceConfig, AppConfig } from './types';
 
+/**
+ * To create or import space config.
+ * * It will include a migrations for a different config versions.
+ * */
 export const normalizeSpaceConfig = (
   space: Partial<SpaceConfig>,
 ): SpaceConfig => ({
+  configVersionNumber: space.configVersionNumber || SPACE_CONFIG_VERSION,
   id: space.id || uuid(),
   name: space.name || 'Space',
   dependencyConfig: {
@@ -20,10 +26,22 @@ export const normalizeSpaceConfig = (
   packagesFolderName: space.packagesFolderName || 'packages',
   pipelineConfig: {
     makeCommit: space.pipelineConfig?.makeCommit || false,
+    makeLint: space.pipelineConfig?.makeLint || true,
     makePush: space.pipelineConfig?.makePush || false,
   },
   projectPaths: space.projectPaths || [],
   repositoryUrls: space.repositoryUrls || [],
+});
+
+/** To create space config file for the export. */
+export const prepareSpaceConfigForExport = (
+  space: Partial<SpaceConfig>,
+): Partial<SpaceConfig> => ({
+  ...space,
+  // will be created in normalizeSpaceConfig on import
+  id: undefined,
+  // unique for every user
+  projectPaths: [],
 });
 
 export const getAppConfigJsonObject = async ({

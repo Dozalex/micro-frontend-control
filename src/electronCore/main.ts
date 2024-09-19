@@ -5,6 +5,7 @@ import {
   ipcMain,
   dialog,
   MessageBoxOptions,
+  OpenDialogOptions,
 } from 'electron';
 import fixPath from 'fix-path';
 import { exec } from 'node:child_process';
@@ -112,6 +113,20 @@ ipcMain.handle(ACTION.openFolderDialog, async () => {
 
   return result.filePaths;
 });
+
+ipcMain.handle(
+  ACTION.openFileDialog,
+  async (_event, options?: OpenDialogOptions) => {
+    if (!mainWindow) return new Error('no window');
+
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile'],
+      ...options,
+    });
+
+    return result.filePaths;
+  },
+);
 
 ipcMain.handle(ACTION.showAlert, (_event, options: MessageBoxOptions) => {
   if (!mainWindow) return new Error('no window');

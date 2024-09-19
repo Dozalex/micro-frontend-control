@@ -1,4 +1,5 @@
 export const ACTION = {
+  openFileDialog: 'openFileDialog',
   openFolderDialog: 'openFolderDialog',
   showAlert: 'showAlert',
   readFile: 'readFile',

@@ -68,7 +68,7 @@ export const RunButton = ({
     setInProgress(true);
 
     const { commitMessage, newBranchName, remoteBranchName } = gitConfig;
-    const { makeCommit, makePush } = pipelineConfig;
+    const { makeCommit, makePush, makeLint } = pipelineConfig;
 
     // loop through each selected project
     await Promise.allSettled(
@@ -154,8 +154,10 @@ export const RunButton = ({
           changeStatus('dependencies installing...');
           await installDeps({ path });
 
-          changeStatus('lint checking...');
-          await runLint({ path });
+          if (makeLint) {
+            changeStatus('lint checking...');
+            await runLint({ path });
+          }
 
           if (makeCommit) {
             changeStatus('changes commiting...');

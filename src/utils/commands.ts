@@ -12,6 +12,16 @@ export const getUserDataPath = async () => {
   }
 };
 
+export const readFile = async ({ path }: { path: string }) => {
+  try {
+    return await window.electronAPI.readFile(path);
+  } catch (err) {
+    console.error(`Failed to read file by path ${path}`, err);
+
+    throw err;
+  }
+};
+
 export const getPackageJsonText = async ({ path }: { path: string }) => {
   try {
     return await window.electronAPI.readFile(`${path}/package.json`);
@@ -270,8 +280,8 @@ export const runLint = async ({
   }
 };
 
-/** get last dependency version in registry */
-export const getLastDependencyVersion = async ({
+/** get latest dependency version in registry */
+export const getLatestDependencyVersion = async ({
   path,
   depName,
 }: {

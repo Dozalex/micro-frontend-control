@@ -4,9 +4,16 @@ import { useData } from './hooks';
 import { Space } from './components';
 
 export const Main = () => {
-  const { space, onChangeSpace } = useData();
+  const { space, onCreateSpace, onChangeSpace, onDeleteSpace } = useData();
 
   if (!space) return null;
 
-  return <Space space={space} onChangeSpace={onChangeSpace} />;
+  return (
+    <Space
+      space={space}
+      onCreateSpace={onCreateSpace}
+      onChangeSpace={onChangeSpace}
+      onDeleteSpace={onDeleteSpace}
+    />
+  );
 };

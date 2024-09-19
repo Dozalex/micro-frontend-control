@@ -3,7 +3,7 @@ import debounce from 'debounce';
 
 import { ArrowRight } from 'icons';
 import { DependencyName, DependencyVersion, ProjectPath } from 'modules';
-import { getLastDependencyVersion } from 'utils';
+import { getLatestDependencyVersion } from 'utils';
 import { IconButton } from 'components/IconButton';
 
 const debounceRequest = debounce((f: () => void) => {
@@ -36,7 +36,7 @@ export const LatestVersion = ({
       if (depName) {
         setLoading(true);
 
-        getLastDependencyVersion({ depName, path: latestDepVersionPath })
+        getLatestDependencyVersion({ depName, path: latestDepVersionPath })
           .then(setLatestVersion)
           .catch(() => setLatestVersion(undefined))
           .finally(() => setLoading(false));

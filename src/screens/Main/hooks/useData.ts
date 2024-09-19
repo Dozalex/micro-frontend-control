@@ -5,7 +5,7 @@ import {
   getAppConfigJsonObject,
   writeAppConfigFile,
   normalizeSpaceConfig,
-  CONFIG_VERSION,
+  APP_CONFIG_VERSION,
   AppConfig,
   SpaceConfig,
 } from 'modules';
@@ -49,7 +49,7 @@ export const useData = () => {
         const newSpaceConfig = normalizeSpaceConfig({});
 
         setAppConfig({
-          configVersionNumber: CONFIG_VERSION,
+          configVersionNumber: APP_CONFIG_VERSION,
           spaces: [newSpaceConfig],
           lastSpaceId: newSpaceConfig.id,
         });
@@ -80,6 +80,20 @@ export const useData = () => {
   }, [appConfig, userDataPath]);
 
   // change space config
+  const onCreateSpace = React.useCallback((spaceConfig: SpaceConfig) => {
+    setAppConfig(prev => {
+      if (prev) {
+        return {
+          ...prev,
+          spaces: [...prev.spaces, spaceConfig],
+        };
+      }
+
+      return undefined;
+    });
+  }, []);
+
+  // change space config
   const onChangeSpace = React.useCallback((spaceConfig: SpaceConfig) => {
     setAppConfig(prev => {
       if (prev) {
@@ -92,6 +106,24 @@ export const useData = () => {
         return {
           ...prev,
           spaces: prev.spaces.toSpliced(spaceIndex, 1, spaceConfig),
+        };
+      }
+
+      return undefined;
+    });
+  }, []);
+
+  // change space config
+  const onDeleteSpace = React.useCallback((spaceId: string) => {
+    setAppConfig(prev => {
+      if (prev) {
+        const spaceIndex = prev.spaces.findIndex(space => space.id === spaceId);
+
+        if (spaceIndex === -1) return prev;
+
+        return {
+          ...prev,
+          spaces: prev.spaces.toSpliced(spaceIndex, 1),
         };
       }
 
@@ -116,7 +148,9 @@ export const useData = () => {
   return {
     appConfig,
     space: selectedSpace,
+    onCreateSpace,
     onChangeSpace,
+    onDeleteSpace,
     onChangeSelectedSpaceId,
   };
 };
