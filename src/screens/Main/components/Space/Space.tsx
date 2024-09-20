@@ -38,6 +38,7 @@ export const Space = ({
     onChangePackagesFolderNameName,
     onChangePipelineConfig,
     onChangeProjectPaths,
+    onChangeSpaceName,
   } = useSpace({ space, onChangeSpace });
 
   const {
@@ -81,6 +82,7 @@ export const Space = ({
           onChangePipelineConfig={onChangePipelineConfig}
           onChangeGitConfig={onChangeGitConfig}
           onChangeDependencyConfig={onChangeDependencyConfig}
+          onChangeSpaceName={onChangeSpaceName}
           onCreateSpace={onCreateSpace}
           onDeleteSpace={onDeleteSpace}
         />

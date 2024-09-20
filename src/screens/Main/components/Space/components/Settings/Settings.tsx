@@ -18,6 +18,7 @@ type Props = {
   onChangeGitConfig: (value: SpaceConfig['gitConfig']) => void;
   onChangeDependencyConfig: (value: SpaceConfig['dependencyConfig']) => void;
   onChangePipelineConfig: (value: SpaceConfig['pipelineConfig']) => void;
+  onChangeSpaceName: (value: SpaceConfig['name']) => void;
   onCreateSpace: (space: SpaceConfig) => void;
   onDeleteSpace: (spaceId: string) => void;
 };
@@ -27,6 +28,7 @@ export const Settings = ({
   onChangeGitConfig,
   onChangeDependencyConfig,
   onChangePipelineConfig,
+  onChangeSpaceName,
   onCreateSpace,
   onDeleteSpace,
 }: Props) => {
@@ -51,7 +53,7 @@ export const Settings = ({
     },
     {
       id: TAB.configFile,
-      title: 'Config file',
+      title: 'Space',
     },
   ];
 
@@ -84,6 +86,7 @@ export const Settings = ({
         return (
           <ConfigFile
             space={space}
+            onChangeSpaceName={onChangeSpaceName}
             onCreateSpace={onCreateSpace}
             onDeleteSpace={onDeleteSpace}
             onCloseModal={onCloseModal}
