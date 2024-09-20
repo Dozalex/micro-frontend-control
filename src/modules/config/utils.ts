@@ -1,5 +1,7 @@
 import { v4 as uuid } from 'uuid';
 
+import { readFile } from 'utils';
+
 import { SPACE_CONFIG_VERSION } from './constants';
 import { SpaceConfig, AppConfig } from './types';
 
@@ -12,7 +14,7 @@ export const normalizeSpaceConfig = (
 ): SpaceConfig => ({
   configVersionNumber: space.configVersionNumber || SPACE_CONFIG_VERSION,
   id: space.id || uuid(),
-  name: space.name || 'Space',
+  name: space.name || 'New space',
   dependencyConfig: {
     showLatestDepVersion: space.dependencyConfig?.showLatestDepVersion || false,
     latestDepVersionPath: space.dependencyConfig?.latestDepVersionPath || '',
@@ -81,5 +83,47 @@ export const writeAppConfigFile = async ({
     );
 
     throw err;
+  }
+};
+
+export const importSpaceConfig = async ({
+  onCreateSpace,
+}: {
+  onCreateSpace: (space: SpaceConfig) => void;
+}) => {
+  try {
+    const filePaths = await window.electronAPI.openFileDialog({
+      filters: [
+        {
+          name: 'Space config',
+          extensions: ['json'],
+        },
+      ],
+    });
+    const path = filePaths[0];
+
+    if (!path) return;
+
+    const newConfigText = await readFile({ path });
+    const newConfig = JSON.parse(newConfigText) as SpaceConfig;
+
+    onCreateSpace(normalizeSpaceConfig(newConfig));
+
+    if (newConfig.configVersionNumber > SPACE_CONFIG_VERSION) {
+      await window.electronAPI.showAlert({
+        title: 'The imported config version is higher than the used one.',
+        message:
+          'Some config data may be missing. For correct operation, it is recommended to get the latest version of the application.',
+        type: 'info',
+      });
+    }
+  } catch (e) {
+    console.error(e);
+
+    await window.electronAPI.showAlert({
+      title: 'Failed to import config',
+      message: 'Check the file for errors',
+      type: 'warning',
+    });
   }
 };

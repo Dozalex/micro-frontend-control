@@ -1,0 +1,65 @@
+.dropdown-transition {
+  --offset: 10px;
+  --animationTimeout: 300ms;
+
+  &[data-custom-width] {
+    min-width: 0 !important;
+  }
+
+  &[data-status='initial'],
+  &[data-status='close'] {
+    opacity: 0;
+    &[data-placement*='bottom'] {
+      transform: translate3d(0, calc(var(--offset) * -1), 0);
+    }
+    &[data-placement*='top'] {
+      transform: translate3d(0, var(--offset), 0);
+    }
+    &[data-placement*='left'] {
+      transform: translate3d(var(--offset), 0, 0);
+    }
+    &[data-placement*='right'] {
+      transform: translate3d(calc(var(--offset) * -1), 0, 0);
+    }
+  }
+
+  &[data-status='open'] {
+    opacity: 1;
+
+    transition-duration: var(--animationTimeout);
+    transition-property: opacity, transform;
+
+    &[data-placement*='bottom'] {
+      transform: translate3d(0, 0px, 0);
+    }
+    &[data-placement*='top'] {
+      transform: translate3d(0, 0px, 0);
+    }
+    &[data-placement*='left'] {
+      transform: translate3d(0, 0, 0);
+    }
+    &[data-placement*='right'] {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  &[data-status='close'] {
+    opacity: 0;
+
+    transition-duration: var(--animationTimeout);
+    transition-property: opacity, transform;
+
+    &[data-placement*='bottom'] {
+      transform: translate3d(0, calc(var(--offset) * -1), 0);
+    }
+    &[data-placement*='top'] {
+      transform: translate3d(0, var(--offset), 0);
+    }
+    &[data-placement*='left'] {
+      transform: translate3d(var(--offset), 0, 0);
+    }
+    &[data-placement*='right'] {
+      transform: translate3d(calc(var(--offset) * -1), 0, 0);
+    }
+  }
+}

@@ -3,3 +3,4 @@ export * from './NewProject';
 export * from './Projects/Projects';
 export * from './RunButton';
 export * from './Settings/Settings';
+export * from './SpaceSelect/SpaceSelect';

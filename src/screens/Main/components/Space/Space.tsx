@@ -5,20 +5,31 @@ import { Input } from 'components/Input';
 import { Section } from 'components/Section';
 
 import { useSpace } from './hooks';
-import { Deps, NewProject, Projects, RunButton, Settings } from './components';
+import {
+  Deps,
+  NewProject,
+  Projects,
+  RunButton,
+  Settings,
+  SpaceSelect,
+} from './components';
 
 type Props = {
   space: SpaceConfig;
+  spaces: SpaceConfig[];
   onCreateSpace: (space: SpaceConfig) => void;
   onChangeSpace: (space: SpaceConfig) => void;
   onDeleteSpace: (spaceId: string) => void;
+  onChangeSelectedSpaceId: (spaceId: SpaceConfig['id']) => void;
 };
 
 export const Space = ({
   space,
+  spaces,
   onCreateSpace,
   onChangeSpace,
   onDeleteSpace,
+  onChangeSelectedSpaceId,
 }: Props) => {
   const {
     onChangeDependencyConfig,
@@ -54,8 +65,17 @@ export const Space = ({
   const filteredDeps = React.useMemo(() => [...new Set(deps)], [deps]);
 
   return (
-    <div className='flex flex-col gap-4 text-white p-4 h-full w-full'>
-      <div className='flex justify-end gap-4'>
+    <div className='flex flex-col gap-4 text-white p-4 min-h-full w-full overflow-auto'>
+      <div className='flex items-center justify-end gap-4'>
+        <div className='mr-auto'>
+          <SpaceSelect
+            space={space}
+            spaces={spaces}
+            onChangeSelectedSpaceId={onChangeSelectedSpaceId}
+            onCreateSpace={onCreateSpace}
+          />
+        </div>
+
         <Settings
           space={space}
           onChangePipelineConfig={onChangePipelineConfig}

@@ -4,16 +4,25 @@ import { useData } from './hooks';
 import { Space } from './components';
 
 export const Main = () => {
-  const { space, onCreateSpace, onChangeSpace, onDeleteSpace } = useData();
+  const {
+    appConfig,
+    space,
+    onCreateSpace,
+    onChangeSpace,
+    onDeleteSpace,
+    onChangeSelectedSpaceId,
+  } = useData();
 
-  if (!space) return null;
+  if (!appConfig || !space) return null;
 
   return (
     <Space
       space={space}
+      spaces={appConfig.spaces}
       onCreateSpace={onCreateSpace}
       onChangeSpace={onChangeSpace}
       onDeleteSpace={onDeleteSpace}
+      onChangeSelectedSpaceId={onChangeSelectedSpaceId}
     />
   );
 };

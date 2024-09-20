@@ -79,19 +79,39 @@ export const useData = () => {
     });
   }, [appConfig, userDataPath]);
 
-  // change space config
-  const onCreateSpace = React.useCallback((spaceConfig: SpaceConfig) => {
+  // change selected space
+  const onChangeSelectedSpaceId = React.useCallback((spaceId: string) => {
     setAppConfig(prev => {
       if (prev) {
         return {
           ...prev,
-          spaces: [...prev.spaces, spaceConfig],
+          lastSpaceId: spaceId,
         };
       }
 
       return undefined;
     });
   }, []);
+
+  // change space config
+  const onCreateSpace = React.useCallback(
+    (spaceConfig: SpaceConfig) => {
+      setAppConfig(prev => {
+        if (prev) {
+          return {
+            ...prev,
+            spaces: [...prev.spaces, spaceConfig],
+          };
+        }
+
+        return undefined;
+      });
+
+      // switch to new space
+      onChangeSelectedSpaceId(spaceConfig.id);
+    },
+    [onChangeSelectedSpaceId],
+  );
 
   // change space config
   const onChangeSpace = React.useCallback((spaceConfig: SpaceConfig) => {
@@ -124,20 +144,6 @@ export const useData = () => {
         return {
           ...prev,
           spaces: prev.spaces.toSpliced(spaceIndex, 1),
-        };
-      }
-
-      return undefined;
-    });
-  }, []);
-
-  // change selected space
-  const onChangeSelectedSpaceId = React.useCallback((spaceId: string) => {
-    setAppConfig(prev => {
-      if (prev) {
-        return {
-          ...prev,
-          lastSpaceId: spaceId,
         };
       }
 
