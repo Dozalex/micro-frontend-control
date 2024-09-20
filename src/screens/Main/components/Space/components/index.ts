@@ -1,6 +1,3 @@
-export * from './Deps/Deps';
-export * from './NewProject';
-export * from './Projects/Projects';
-export * from './RunButton';
+export * from './BumpDeps/BumpDeps';
 export * from './Settings/Settings';
 export * from './SpaceSelect/SpaceSelect';

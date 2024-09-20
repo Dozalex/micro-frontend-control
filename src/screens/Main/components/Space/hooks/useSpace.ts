@@ -19,7 +19,7 @@ export const useSpace = ({ space, onChangeSpace }: Props) => {
     [space, onChangeSpace],
   );
 
-  const onChangePackagesFolderNameName = React.useCallback(
+  const onChangePackagesFolderName = React.useCallback(
     (newName: SpaceConfig['packagesFolderName']) => {
       onChangeSpace({
         ...space,
@@ -83,7 +83,7 @@ export const useSpace = ({ space, onChangeSpace }: Props) => {
     onChangeDependencyConfig,
     onChangeDependencyNames,
     onChangeGitConfig,
-    onChangePackagesFolderNameName,
+    onChangePackagesFolderName,
     onChangePipelineConfig,
     onChangeProjectPaths,
     onChangeSpaceName,

@@ -1,18 +1,11 @@
 import * as React from 'react';
 
-import { DependencyName, DependencyVersion, SpaceConfig } from 'modules';
-import { Input } from 'components/Input';
-import { Section } from 'components/Section';
+import { SpaceConfig } from 'modules';
+import { TabsProps, useTabs } from 'components/Tabs';
 
+import { SPACE_TAB as TAB } from './constants';
 import { useSpace } from './hooks';
-import {
-  Deps,
-  NewProject,
-  Projects,
-  RunButton,
-  Settings,
-  SpaceSelect,
-} from './components';
+import { Settings, SpaceSelect, BumpDeps } from './components';
 
 type Props = {
   space: SpaceConfig;
@@ -35,38 +28,39 @@ export const Space = ({
     onChangeDependencyConfig,
     onChangeDependencyNames,
     onChangeGitConfig,
-    onChangePackagesFolderNameName,
+    onChangePackagesFolderName,
     onChangePipelineConfig,
     onChangeProjectPaths,
     onChangeSpaceName,
   } = useSpace({ space, onChangeSpace });
 
-  const {
-    dependencyNames: deps,
-    projectPaths: projects,
-    dependencyConfig,
-    gitConfig,
-    pipelineConfig,
-    packagesFolderName,
-  } = space;
+  const tabs: TabsProps['tabs'] = [
+    {
+      id: TAB.bumpDeps,
+      title: 'Bump deps',
+    },
+  ];
 
-  // local data
+  const { activeTabId, tabsComponent } = useTabs({ tabs });
 
-  const [projectsForUpdate, setProjectsForUpdate] = React.useState<string[]>(
-    [],
-  );
-  const [depVersions, setDepVersions] = React.useState<
-    Record<DependencyName, DependencyVersion | undefined>
-  >({});
-  const [statusByProject, setStatusByProject] = React.useState<
-    Record<string, string | undefined>
-  >({});
-
-  // remove duplicates
-  const filteredDeps = React.useMemo(() => [...new Set(deps)], [deps]);
+  const content = (() => {
+    switch (activeTabId) {
+      case TAB.bumpDeps:
+        return (
+          <BumpDeps
+            space={space}
+            onChangeDependencyNames={onChangeDependencyNames}
+            onChangePackagesFolderName={onChangePackagesFolderName}
+            onChangeProjectPaths={onChangeProjectPaths}
+          />
+        );
+      default:
+        return null;
+    }
+  })();
 
   return (
-    <div className='flex flex-col gap-4 text-white p-4 min-h-full w-full overflow-auto'>
+    <div className='flex flex-col text-white p-4 h-full w-full overflow-hidden'>
       <div className='flex items-center justify-end gap-4'>
         <div className='mr-auto'>
           <SpaceSelect
@@ -86,49 +80,11 @@ export const Space = ({
           onCreateSpace={onCreateSpace}
           onDeleteSpace={onDeleteSpace}
         />
-
-        <RunButton
-          deps={filteredDeps}
-          packagesFolderName={packagesFolderName}
-          projectsForUpdate={projectsForUpdate}
-          depVersions={depVersions}
-          gitConfig={gitConfig}
-          pipelineConfig={pipelineConfig}
-          setStatusByProject={setStatusByProject}
-        />
       </div>
 
-      <Deps
-        deps={deps}
-        onChangeDependencyNames={onChangeDependencyNames}
-        depVersions={depVersions}
-        setDepVersions={setDepVersions}
-        dependencyConfig={dependencyConfig}
-      />
+      {tabsComponent}
 
-      <Section title='Project settings'>
-        <Input
-          label='Packages folder name'
-          value={packagesFolderName}
-          onChange={e => onChangePackagesFolderNameName(e.target.value)}
-        />
-      </Section>
-
-      <NewProject
-        projects={projects}
-        onChangeProjectPaths={onChangeProjectPaths}
-      />
-
-      <Projects
-        projects={projects}
-        onChangeProjectPaths={onChangeProjectPaths}
-        deps={filteredDeps}
-        packagesFolderName={packagesFolderName}
-        projectsForUpdate={projectsForUpdate}
-        setProjectsForUpdate={setProjectsForUpdate}
-        depVersions={depVersions}
-        statusByProject={statusByProject}
-      />
+      {content}
     </div>
   );
 };
