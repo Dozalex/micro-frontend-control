@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { Trash } from 'icons';
 import {
   DependencyName,
   DependencyVersion,
@@ -8,15 +7,17 @@ import {
   ProjectPath,
 } from 'modules';
 import { getPackageJsonObject, getProjectPackageFolderNames } from 'utils';
+import { Button } from 'components/Button';
 import { Checkbox } from 'components/Checkbox';
-import { IconButton } from 'components/IconButton';
+import { Divider } from 'components/Divider';
 import { Section } from 'components/Section';
 
-import { Dependency } from './components';
+import { Dependency, Status } from './components';
 
 type Props = {
   path: string;
-  status?: string;
+  statuses?: string[];
+  error?: string;
   deps: DependencyName[];
   packagesFolderName: string;
   projectsForUpdate: ProjectPath[];
@@ -27,7 +28,8 @@ type Props = {
 
 export const Project = ({
   path,
-  status,
+  statuses,
+  error,
   deps,
   packagesFolderName,
   projectsForUpdate,
@@ -90,7 +92,7 @@ export const Project = ({
       title={path}
       headerContent={
         <div className='flex gap-4 items-center'>
-          <p className='text-sm text-gray-400'>{status}</p>
+          <Status error={error} statuses={statuses} />
 
           <Checkbox
             label='Update'
@@ -105,14 +107,21 @@ export const Project = ({
               }
             }}
           />
-
-          <IconButton icon={Trash} onClick={() => onDelete(path)} />
         </div>
       }
       onTitleClick={() => setIsOpen(!isOpen)}
     >
-      {isOpen
-        ? packageJsonObject.map(packageJson => {
+      {isOpen ? (
+        <div className='grid gap-5'>
+          <div className='flex justify-end'>
+            <Button onClick={() => onDelete(path)} variant='warning'>
+              Delete
+            </Button>
+          </div>
+
+          <Divider />
+
+          {packageJsonObject.map(packageJson => {
             const followedDeps = deps.filter(
               dep =>
                 !!packageJson.dependencies?.[dep] ||
@@ -141,8 +150,9 @@ export const Project = ({
                 </div>
               </div>
             );
-          })
-        : null}
+          })}
+        </div>
+      ) : null}
     </Section>
   );
 };

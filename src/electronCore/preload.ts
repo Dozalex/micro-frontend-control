@@ -6,8 +6,10 @@ import {
 } from 'electron';
 
 import { ACTION } from './constants';
+import { RunCommandOptions } from './types';
 
 export interface ElectronAPI {
+  getProcessPlatform: () => string;
   openFolderDialog: () => Promise<string[]>;
   openFileDialog: (options?: OpenDialogOptions) => Promise<string[]>;
   showAlert: (options: MessageBoxOptions) => Promise<string[]>;
@@ -15,12 +17,13 @@ export interface ElectronAPI {
   writeFile: (path: string, content: string) => Promise<string>;
   deleteFile: (path: string) => Promise<string>;
   getChildFolderNames: (path: string) => Promise<string[]>;
-  runCommand: (options: { path: string; command: string }) => Promise<string>;
+  runCommand: (options: RunCommandOptions) => Promise<string>;
   getUserDataPath: () => Promise<string>;
 }
 
 // Set up a preload script to expose the IPC methods to the renderer process
 contextBridge.exposeInMainWorld('electronAPI', {
+  getProcessPlatform: () => ipcRenderer.invoke(ACTION.getProcessPlatform),
   openFolderDialog: () => ipcRenderer.invoke(ACTION.openFolderDialog),
   openFileDialog: (options?: OpenDialogOptions) =>
     ipcRenderer.invoke(ACTION.openFileDialog, options),
@@ -32,7 +35,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteFile: (path: string) => ipcRenderer.invoke(ACTION.deleteFile, path),
   getChildFolderNames: (path: string) =>
     ipcRenderer.invoke(ACTION.getChildFolderNames, path),
-  runCommand: (options: { path: string; command: string }) =>
+  runCommand: (options: RunCommandOptions) =>
     ipcRenderer.invoke(ACTION.runCommand, options),
   getUserDataPath: () => ipcRenderer.invoke(ACTION.getUserDataPath),
 });

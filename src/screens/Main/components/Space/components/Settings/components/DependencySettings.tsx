@@ -1,30 +1,33 @@
 import * as React from 'react';
 
-import { SpaceConfig } from 'modules';
+import { AppConfigContext, SpaceConfig } from 'modules';
 import { Checkbox } from 'components/Checkbox';
 import { Divider } from 'components/Divider';
 import { Hint } from 'components/Hint';
 import { Input } from 'components/Input';
 
-type Props = {
-  dependencyConfig: SpaceConfig['dependencyConfig'];
-  onChangeDependencyConfig: (value: SpaceConfig['dependencyConfig']) => void;
-};
+export const DependencySettings = () => {
+  const {
+    space: { dependencyConfig },
+    onUpdateSpace,
+  } = React.useContext(AppConfigContext);
 
-export const DependencySettings = ({
-  dependencyConfig,
-  onChangeDependencyConfig,
-}: Props) => {
+  const onChange = (config: Partial<SpaceConfig['dependencyConfig']>) => {
+    onUpdateSpace({
+      dependencyConfig: {
+        ...dependencyConfig,
+        ...config,
+      },
+    });
+  };
+
   const onChangeLatestDepVersionPath = async () => {
     const filePaths = await window.electronAPI.openFolderDialog();
     const path = filePaths[0];
 
     if (!path) return;
 
-    onChangeDependencyConfig({
-      ...dependencyConfig,
-      latestDepVersionPath: path,
-    });
+    onChange({ latestDepVersionPath: path });
   };
 
   return (
@@ -33,12 +36,7 @@ export const DependencySettings = ({
         <Checkbox
           label='Show latest dependency version'
           checked={dependencyConfig.showLatestDepVersion}
-          onChange={checked =>
-            onChangeDependencyConfig({
-              ...dependencyConfig,
-              showLatestDepVersion: checked,
-            })
-          }
+          onChange={checked => onChange({ showLatestDepVersion: checked })}
         />
 
         <Hint>

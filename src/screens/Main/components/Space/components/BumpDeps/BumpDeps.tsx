@@ -1,34 +1,16 @@
 import * as React from 'react';
 
-import { DependencyName, DependencyVersion, SpaceConfig } from 'modules';
+import { AppConfigContext, DependencyName, DependencyVersion } from 'modules';
 import { Input } from 'components/Input';
 import { Section } from 'components/Section';
 
 import { Deps, NewProject, Projects, RunButton } from './components';
 
-type Props = {
-  space: SpaceConfig;
-  onChangeDependencyNames: (value: SpaceConfig['dependencyNames']) => void;
-  onChangePackagesFolderName: (
-    value: SpaceConfig['packagesFolderName'],
-  ) => void;
-  onChangeProjectPaths: (value: SpaceConfig['projectPaths']) => void;
-};
-
-export const BumpDeps = ({
-  space,
-  onChangeDependencyNames,
-  onChangePackagesFolderName,
-  onChangeProjectPaths,
-}: Props) => {
+export const BumpDeps = () => {
   const {
-    dependencyNames: deps,
-    projectPaths: projects,
-    dependencyConfig,
-    gitConfig,
-    pipelineConfig,
-    packagesFolderName,
-  } = space;
+    space: { packagesFolderName, dependencyNames },
+    onUpdateSpace,
+  } = React.useContext(AppConfigContext);
 
   // local data
 
@@ -38,57 +20,53 @@ export const BumpDeps = ({
   const [depVersions, setDepVersions] = React.useState<
     Record<DependencyName, DependencyVersion | undefined>
   >({});
-  const [statusByProject, setStatusByProject] = React.useState<
+  const [statusesByProject, setStatusesByProject] = React.useState<
+    Record<string, string[] | undefined>
+  >({});
+  const [errorByProject, setErrorByProject] = React.useState<
     Record<string, string | undefined>
   >({});
 
   // remove duplicates
-  const filteredDeps = React.useMemo(() => [...new Set(deps)], [deps]);
+  const filteredDeps = React.useMemo(
+    () => [...new Set(dependencyNames)],
+    [dependencyNames],
+  );
 
   return (
-    <div className='flex flex-col gap-4 text-white p-4 min-h-full w-full overflow-auto'>
-      <div className='flex items-center justify-end gap-4'>
+    <div className='relative flex flex-col gap-4 text-white px-4 h-full w-full overflow-auto'>
+      <div className='sticky top-0 flex items-center justify-end gap-4 py-3 bg-gray-800'>
         <RunButton
-          deps={filteredDeps}
-          packagesFolderName={packagesFolderName}
+          uniqueDependencyNames={filteredDeps}
           projectsForUpdate={projectsForUpdate}
           depVersions={depVersions}
-          gitConfig={gitConfig}
-          pipelineConfig={pipelineConfig}
-          setStatusByProject={setStatusByProject}
+          setStatusesByProject={setStatusesByProject}
+          setErrorByProject={setErrorByProject}
         />
       </div>
 
-      <Deps
-        deps={deps}
-        onChangeDependencyNames={onChangeDependencyNames}
-        depVersions={depVersions}
-        setDepVersions={setDepVersions}
-        dependencyConfig={dependencyConfig}
-      />
+      <Deps depVersions={depVersions} setDepVersions={setDepVersions} />
 
       <Section title='Project settings'>
         <Input
           label='Packages folder name'
           value={packagesFolderName}
-          onChange={e => onChangePackagesFolderName(e.target.value)}
+          onChange={e =>
+            onUpdateSpace({
+              packagesFolderName: e.target.value,
+            })
+          }
         />
       </Section>
 
-      <NewProject
-        projects={projects}
-        onChangeProjectPaths={onChangeProjectPaths}
-      />
+      <NewProject />
 
       <Projects
-        projects={projects}
-        onChangeProjectPaths={onChangeProjectPaths}
-        deps={filteredDeps}
-        packagesFolderName={packagesFolderName}
         projectsForUpdate={projectsForUpdate}
         setProjectsForUpdate={setProjectsForUpdate}
         depVersions={depVersions}
-        statusByProject={statusByProject}
+        statusesByProject={statusesByProject}
+        errorByProject={errorByProject}
       />
     </div>
   );

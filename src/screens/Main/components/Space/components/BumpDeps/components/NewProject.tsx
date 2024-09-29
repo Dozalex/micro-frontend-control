@@ -1,14 +1,14 @@
 import * as React from 'react';
 
-import { SpaceConfig } from 'modules';
+import { AppConfigContext } from 'modules';
 import { Button } from 'components/Button';
 
-type Props = {
-  projects: SpaceConfig['projectPaths'];
-  onChangeProjectPaths: (value: SpaceConfig['projectPaths']) => void;
-};
+export const NewProject = () => {
+  const {
+    space: { projectPaths },
+    onUpdateSpace,
+  } = React.useContext(AppConfigContext);
 
-export const NewProject = ({ projects, onChangeProjectPaths }: Props) => {
   const onAdd = async () => {
     const filePaths = await window.electronAPI.openFolderDialog();
     const path = filePaths[0];
@@ -16,7 +16,7 @@ export const NewProject = ({ projects, onChangeProjectPaths }: Props) => {
     if (!path) return;
 
     // check the project to already added
-    if (projects.some(project => project === path)) {
+    if (projectPaths.some(project => project === path)) {
       await window.electronAPI.showAlert({
         title: 'Conflict',
         message: 'Project is already added',
@@ -26,7 +26,9 @@ export const NewProject = ({ projects, onChangeProjectPaths }: Props) => {
       return;
     }
 
-    onChangeProjectPaths([...projects, path]);
+    onUpdateSpace({
+      projectPaths: [...projectPaths, path],
+    });
   };
 
   return (

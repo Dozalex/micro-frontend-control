@@ -23,6 +23,8 @@ export type SpaceConfig = {
   dependencyNames: string[];
   dependencyConfig: DependencyConfig;
   gitConfig: GitConfig;
+  // node version (e.g. 18.18.0)
+  nodeVersion?: string;
   packagesFolderName: string;
   pipelineConfig: PipelineConfig;
   projectPaths: string[];
@@ -35,4 +37,6 @@ export type AppConfig = {
   spaces: SpaceConfig[];
   // last selected space id
   lastSpaceId?: string;
+  // path to nvm.sh (e.g. ~/.nvm/nvm.sh)
+  nvmPath?: string;
 };

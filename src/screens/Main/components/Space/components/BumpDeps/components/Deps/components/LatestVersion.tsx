@@ -6,10 +6,6 @@ import { DependencyName, DependencyVersion, ProjectPath } from 'modules';
 import { getLatestDependencyVersion } from 'utils';
 import { IconButton } from 'components/IconButton';
 
-const debounceRequest = debounce((f: () => void) => {
-  f();
-}, 800);
-
 type Props = {
   latestDepVersionPath: ProjectPath;
   depName: DependencyName;
@@ -31,6 +27,11 @@ export const LatestVersion = ({
   const [loading, setLoading] = React.useState(false);
   const [latestVersion, setLatestVersion] = React.useState<DependencyVersion>();
 
+  const debounceRequest = React.useMemo(
+    () => debounce((f: () => void) => f(), 800),
+    [],
+  );
+
   React.useEffect(() => {
     debounceRequest(() => {
       if (depName) {
@@ -44,7 +45,7 @@ export const LatestVersion = ({
         setLatestVersion(undefined);
       }
     });
-  }, [depName, latestDepVersionPath]);
+  }, [depName, latestDepVersionPath, debounceRequest]);
 
   return (
     <div className='grid gap-3 grid-cols-[150px_auto] items-center h-full'>

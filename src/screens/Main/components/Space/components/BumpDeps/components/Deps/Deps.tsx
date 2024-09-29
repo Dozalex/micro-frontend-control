@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Trash } from 'icons';
-import { DependencyName, DependencyVersion, SpaceConfig } from 'modules';
+import { AppConfigContext, DependencyName, DependencyVersion } from 'modules';
 import { Button } from 'components/Button';
 import { IconButton } from 'components/IconButton';
 import { Input } from 'components/Input';
@@ -11,24 +11,22 @@ import { TableColumnHeader } from 'components/TableColumnHeader';
 import { LatestVersion } from './components';
 
 type Props = {
-  dependencyConfig: SpaceConfig['dependencyConfig'];
-  deps: SpaceConfig['dependencyNames'];
-  onChangeDependencyNames: (value: SpaceConfig['dependencyNames']) => void;
   depVersions: Record<DependencyName, DependencyVersion | undefined>;
   setDepVersions: React.Dispatch<
     React.SetStateAction<Record<DependencyName, DependencyVersion | undefined>>
   >;
 };
 
-export const Deps = ({
-  deps,
-  onChangeDependencyNames,
-  depVersions,
-  setDepVersions,
-  dependencyConfig,
-}: Props) => {
+export const Deps = ({ depVersions, setDepVersions }: Props) => {
+  const {
+    space: { dependencyNames, dependencyConfig },
+    onUpdateSpace,
+  } = React.useContext(AppConfigContext);
+
   const onAdd = () => {
-    onChangeDependencyNames([...deps, '']);
+    onUpdateSpace({
+      dependencyNames: [...dependencyNames, ''],
+    });
   };
 
   const onChangeDep = ({
@@ -38,11 +36,15 @@ export const Deps = ({
     index: number;
     newName: string;
   }) => {
-    onChangeDependencyNames(deps.toSpliced(index, 1, newName));
+    onUpdateSpace({
+      dependencyNames: dependencyNames.toSpliced(index, 1, newName),
+    });
   };
 
   const onDelete = (index: number) => {
-    onChangeDependencyNames(deps.toSpliced(index, 1));
+    onUpdateSpace({
+      dependencyNames: dependencyNames.toSpliced(index, 1),
+    });
   };
 
   const onChangeVersion = ({
@@ -65,7 +67,7 @@ export const Deps = ({
   return (
     <Section title='Followed dependencies'>
       <div className='grid gap-3'>
-        {deps.length ? (
+        {dependencyNames.length ? (
           <div
             className={`grid gap-4 items-end ${latestDepVersionPath ? 'grid-cols-[1fr_auto_200px_auto]' : 'grid-cols-[1fr_200px_auto]'}`}
           >
@@ -76,7 +78,7 @@ export const Deps = ({
             <TableColumnHeader>New version</TableColumnHeader>
             <TableColumnHeader />
 
-            {deps.map((dep, index) => (
+            {dependencyNames.map((dep, index) => (
               <React.Fragment
                 // it's required to use index here because the dep name is dynamic
                 key={index}

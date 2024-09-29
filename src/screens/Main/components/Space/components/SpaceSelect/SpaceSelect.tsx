@@ -1,24 +1,15 @@
 import * as React from 'react';
 
 import { ChevronDown } from 'icons';
-import { importSpaceConfig, SpaceConfig } from 'modules';
+import { AppConfigContext, importSpaceConfig } from 'modules';
 import { Dropdown } from 'components/Dropdown';
 
 import { SpaceList } from './components';
 
-type Props = {
-  space: SpaceConfig;
-  spaces: SpaceConfig[];
-  onCreateSpace: (space: SpaceConfig) => void;
-  onChangeSelectedSpaceId: (spaceId: SpaceConfig['id']) => void;
-};
+export const SpaceSelect = () => {
+  const { appConfig, space, onCreateSpace, onChangeSelectedSpaceId } =
+    React.useContext(AppConfigContext);
 
-export const SpaceSelect = ({
-  space,
-  spaces,
-  onCreateSpace,
-  onChangeSelectedSpaceId,
-}: Props) => {
   const onImport = () => {
     importSpaceConfig({ onCreateSpace });
   };
@@ -30,7 +21,7 @@ export const SpaceSelect = ({
       minWidth={250}
       renderContent={() => (
         <SpaceList
-          spaces={spaces}
+          spaces={appConfig.spaces}
           activeSpaceId={space.id}
           onCreateSpace={onCreateSpace}
           onChangeSelectedSpaceId={onChangeSelectedSpaceId}

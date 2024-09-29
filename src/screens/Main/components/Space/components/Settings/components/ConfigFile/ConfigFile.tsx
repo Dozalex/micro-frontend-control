@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { SpaceConfig } from 'modules';
+import { AppConfigContext } from 'modules';
 import { Divider } from 'components/Divider';
 import { Hint } from 'components/Hint';
 import { Input } from 'components/Input';
@@ -8,47 +8,37 @@ import { Input } from 'components/Input';
 import { DeleteSection, ExportSection, ImportSection } from './components';
 
 type Props = {
-  space: SpaceConfig;
-  onCreateSpace: (space: SpaceConfig) => void;
-  onDeleteSpace: (spaceId: string) => void;
   onCloseModal: () => void;
-  onChangeSpaceName: (value: SpaceConfig['name']) => void;
 };
 
-export const ConfigFile = ({
-  space,
-  onCreateSpace,
-  onDeleteSpace,
-  onCloseModal,
-  onChangeSpaceName,
-}: Props) => (
-  <React.Fragment>
-    <div>
-      <Input
-        label='Space name'
-        value={space.name}
-        onChange={e => onChangeSpaceName(e.target.value)}
-      />
+export const ConfigFile = ({ onCloseModal }: Props) => {
+  const { space, onUpdateSpace } = React.useContext(AppConfigContext);
 
-      <Hint>
-        Use different space names to differentiate projects from each other.
-      </Hint>
-    </div>
+  return (
+    <React.Fragment>
+      <div>
+        <Input
+          label='Space name'
+          value={space.name}
+          onChange={e => onUpdateSpace({ name: e.target.value })}
+        />
 
-    <Divider />
+        <Hint>
+          Use different space names to differentiate projects from each other.
+        </Hint>
+      </div>
 
-    <ImportSection onCreateSpace={onCreateSpace} />
+      <Divider />
 
-    <Divider />
+      <ImportSection />
 
-    <ExportSection space={space} />
+      <Divider />
 
-    <Divider />
+      <ExportSection space={space} />
 
-    <DeleteSection
-      space={space}
-      onDeleteSpace={onDeleteSpace}
-      onCloseModal={onCloseModal}
-    />
-  </React.Fragment>
-);
+      <Divider />
+
+      <DeleteSection onCloseModal={onCloseModal} />
+    </React.Fragment>
+  );
+};

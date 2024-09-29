@@ -9,7 +9,7 @@ import {
   AppConfig,
   SpaceConfig,
 } from 'modules';
-import { getUserDataPath } from 'utils';
+import { getUserDataPath, getNvmPath } from 'utils';
 
 const debounceRequest = debounce((f: () => void) => {
   f();
@@ -37,6 +37,26 @@ export const useData = () => {
       : appConfig.spaces[0];
   }, [appConfig]);
 
+  const onCreateAppConfig = React.useCallback(async () => {
+    const isWin32 = window.electronAPI.getProcessPlatform() === 'win32';
+
+    let nvmPath = '';
+
+    // it's possible to determine the NVM path only for Unix-based systems
+    if (!isWin32) {
+      nvmPath = await getNvmPath();
+    }
+
+    const newSpaceConfig = normalizeSpaceConfig({});
+
+    setAppConfig({
+      configVersionNumber: APP_CONFIG_VERSION,
+      spaces: [newSpaceConfig],
+      lastSpaceId: newSpaceConfig.id,
+      nvmPath,
+    });
+  }, []);
+
   // get app config
   React.useEffect(() => {
     if (!userDataPath) return;
@@ -45,16 +65,9 @@ export const useData = () => {
       .then(setAppConfig)
       .catch(() => {
         // app config not found, create the new
-
-        const newSpaceConfig = normalizeSpaceConfig({});
-
-        setAppConfig({
-          configVersionNumber: APP_CONFIG_VERSION,
-          spaces: [newSpaceConfig],
-          lastSpaceId: newSpaceConfig.id,
-        });
+        onCreateAppConfig();
       });
-  }, [userDataPath]);
+  }, [userDataPath, onCreateAppConfig]);
 
   // create a space config if not exists
   React.useEffect(() => {
@@ -93,7 +106,7 @@ export const useData = () => {
     });
   }, []);
 
-  // change space config
+  // Add the new space to appConfig.spaces
   const onCreateSpace = React.useCallback(
     (spaceConfig: SpaceConfig) => {
       setAppConfig(prev => {
@@ -113,7 +126,35 @@ export const useData = () => {
     [onChangeSelectedSpaceId],
   );
 
-  // change space config
+  // Update the current space in appConfig.spaces
+  const onUpdateSpace = React.useCallback(
+    (spaceConfig: Partial<SpaceConfig>) => {
+      if (!selectedSpace) return;
+
+      setAppConfig(prev => {
+        if (prev) {
+          const spaceIndex = prev.spaces.findIndex(
+            space => space.id === selectedSpace?.id,
+          );
+
+          if (spaceIndex === -1) return prev;
+
+          return {
+            ...prev,
+            spaces: prev.spaces.toSpliced(spaceIndex, 1, {
+              ...selectedSpace,
+              ...spaceConfig,
+            }),
+          };
+        }
+
+        return undefined;
+      });
+    },
+    [selectedSpace],
+  );
+
+  // Change the space in appConfig.spaces
   const onChangeSpace = React.useCallback((spaceConfig: SpaceConfig) => {
     setAppConfig(prev => {
       if (prev) {
@@ -133,7 +174,7 @@ export const useData = () => {
     });
   }, []);
 
-  // change space config
+  // Delete the space from appConfig.spaces
   const onDeleteSpace = React.useCallback((spaceId: string) => {
     setAppConfig(prev => {
       if (prev) {
@@ -151,12 +192,28 @@ export const useData = () => {
     });
   }, []);
 
+  // Change appConfig.nvmPath
+  const onChangeNvmPath = React.useCallback((nvmPath: string) => {
+    setAppConfig(prev => {
+      if (prev) {
+        return {
+          ...prev,
+          nvmPath,
+        };
+      }
+
+      return undefined;
+    });
+  }, []);
+
   return {
     appConfig,
     space: selectedSpace,
     onCreateSpace,
     onChangeSpace,
+    onUpdateSpace,
     onDeleteSpace,
     onChangeSelectedSpaceId,
+    onChangeNvmPath,
   };
 };

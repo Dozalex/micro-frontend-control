@@ -1,21 +1,17 @@
 import * as React from 'react';
 
-import { SpaceConfig } from 'modules';
+import { AppConfigContext } from 'modules';
 import { Button } from 'components/Button';
 import { useConfirmModal } from 'components/ConfirmModal';
 import { Hint } from 'components/Hint';
 
 type Props = {
-  space: SpaceConfig;
-  onDeleteSpace: (spaceId: string) => void;
   onCloseModal: () => void;
 };
 
-export const DeleteSection = ({
-  space,
-  onDeleteSpace,
-  onCloseModal,
-}: Props) => {
+export const DeleteSection = ({ onCloseModal }: Props) => {
+  const { space, onDeleteSpace } = React.useContext(AppConfigContext);
+
   const onConfirmDelete = async () => {
     onDeleteSpace(space.id);
 

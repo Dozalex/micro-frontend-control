@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { AppConfigContext, AppConfigContextType } from 'modules';
+
 import { useData } from './hooks';
 import { Space } from './components';
 
@@ -9,20 +11,43 @@ export const Main = () => {
     space,
     onCreateSpace,
     onChangeSpace,
+    onUpdateSpace,
     onDeleteSpace,
     onChangeSelectedSpaceId,
+    onChangeNvmPath,
   } = useData();
 
-  if (!appConfig || !space) return null;
+  const contextValue: AppConfigContextType | undefined = React.useMemo(
+    () =>
+      appConfig && space
+        ? {
+            appConfig,
+            space,
+            onCreateSpace,
+            onChangeSpace,
+            onUpdateSpace,
+            onDeleteSpace,
+            onChangeNvmPath,
+            onChangeSelectedSpaceId,
+          }
+        : undefined,
+    [
+      appConfig,
+      space,
+      onCreateSpace,
+      onChangeSpace,
+      onUpdateSpace,
+      onDeleteSpace,
+      onChangeNvmPath,
+      onChangeSelectedSpaceId,
+    ],
+  );
+
+  if (!contextValue) return null;
 
   return (
-    <Space
-      space={space}
-      spaces={appConfig.spaces}
-      onCreateSpace={onCreateSpace}
-      onChangeSpace={onChangeSpace}
-      onDeleteSpace={onDeleteSpace}
-      onChangeSelectedSpaceId={onChangeSelectedSpaceId}
-    />
+    <AppConfigContext.Provider value={contextValue}>
+      <Space />
+    </AppConfigContext.Provider>
   );
 };

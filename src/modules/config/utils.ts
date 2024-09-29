@@ -1,8 +1,9 @@
+import * as React from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { readFile } from 'utils';
 
-import { SPACE_CONFIG_VERSION } from './constants';
+import { SPACE_CONFIG_VERSION, APP_CONFIG_VERSION } from './constants';
 import { SpaceConfig, AppConfig } from './types';
 
 /**
@@ -25,6 +26,7 @@ export const normalizeSpaceConfig = (
     remoteBranchName: space.gitConfig?.remoteBranchName || 'origin/develop',
     commitMessage: space.gitConfig?.commitMessage || 'fix: bump deps.',
   },
+  nodeVersion: space.nodeVersion,
   packagesFolderName: space.packagesFolderName || 'packages',
   pipelineConfig: {
     makeCommit: space.pipelineConfig?.makeCommit || false,
@@ -127,3 +129,28 @@ export const importSpaceConfig = async ({
     });
   }
 };
+
+export type AppConfigContextType = {
+  appConfig: AppConfig;
+  space: SpaceConfig;
+  onCreateSpace: (config: SpaceConfig) => void;
+  onChangeSpace: (config: SpaceConfig) => void;
+  onUpdateSpace: (config: Partial<SpaceConfig>) => void;
+  onDeleteSpace: (spaceId: string) => void;
+  onChangeNvmPath: (path: string) => void;
+  onChangeSelectedSpaceId: (spaceId: string) => void;
+};
+
+export const AppConfigContext = React.createContext<AppConfigContextType>({
+  appConfig: {
+    configVersionNumber: APP_CONFIG_VERSION,
+    spaces: [],
+  },
+  space: normalizeSpaceConfig({}),
+  onCreateSpace: () => {},
+  onChangeSpace: () => {},
+  onUpdateSpace: () => {},
+  onDeleteSpace: () => {},
+  onChangeNvmPath: () => {},
+  onChangeSelectedSpaceId: () => {},
+});

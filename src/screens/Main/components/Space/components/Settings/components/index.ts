@@ -1,3 +1,4 @@
+export * from './NodeSettings';
 export * from './ConfigFile/ConfigFile';
 export * from './GitSettings';
 export * from './DependencySettings';

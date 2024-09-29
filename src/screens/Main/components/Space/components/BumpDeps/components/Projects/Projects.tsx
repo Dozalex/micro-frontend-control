@@ -4,50 +4,56 @@ import {
   ProjectPath,
   DependencyName,
   DependencyVersion,
-  SpaceConfig,
+  AppConfigContext,
 } from 'modules';
+import { Divider } from 'components/Divider';
 
 import { Project } from './components';
 
 type Props = {
-  projects: SpaceConfig['projectPaths'];
-  onChangeProjectPaths: (value: SpaceConfig['projectPaths']) => void;
   projectsForUpdate: ProjectPath[];
   setProjectsForUpdate: React.Dispatch<React.SetStateAction<ProjectPath[]>>;
-  deps: DependencyName[];
-  packagesFolderName: string;
   depVersions: Record<DependencyName, DependencyVersion | undefined>;
-  statusByProject: Record<string, string | undefined>;
+  statusesByProject: Record<string, string[] | undefined>;
+  errorByProject: Record<string, string | undefined>;
 };
 
 export const Projects = ({
-  projects,
-  deps,
-  packagesFolderName,
   setProjectsForUpdate,
   projectsForUpdate,
   depVersions,
-  onChangeProjectPaths,
-  statusByProject,
+  statusesByProject,
+  errorByProject,
 }: Props) => {
+  const {
+    space: { projectPaths, dependencyNames, packagesFolderName },
+    onUpdateSpace,
+  } = React.useContext(AppConfigContext);
+
   const onDelete = (projectPath: string) => {
-    onChangeProjectPaths(projects.filter(path => path !== projectPath));
+    onUpdateSpace({
+      projectPaths: projectPaths.filter(path => path !== projectPath),
+    });
   };
 
   return (
     <div className='grid gap-3'>
-      {projects.map(project => (
-        <Project
-          key={project}
-          path={project}
-          deps={deps}
-          packagesFolderName={packagesFolderName}
-          projectsForUpdate={projectsForUpdate}
-          setProjectsForUpdate={setProjectsForUpdate}
-          depVersions={depVersions}
-          onDelete={onDelete}
-          status={statusByProject[project]}
-        />
+      {projectPaths.map(project => (
+        <React.Fragment key={project}>
+          <Project
+            path={project}
+            deps={dependencyNames}
+            packagesFolderName={packagesFolderName}
+            projectsForUpdate={projectsForUpdate}
+            setProjectsForUpdate={setProjectsForUpdate}
+            depVersions={depVersions}
+            onDelete={onDelete}
+            statuses={statusesByProject[project]}
+            error={errorByProject[project]}
+          />
+
+          <Divider />
+        </React.Fragment>
       ))}
     </div>
   );

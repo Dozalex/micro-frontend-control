@@ -11,9 +11,11 @@ import fixPath from 'fix-path';
 import { exec } from 'node:child_process';
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
+import * as process from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 import { ACTION } from './constants';
+import { RunCommandOptions } from './types';
 
 fixPath();
 
@@ -104,6 +106,8 @@ app.on('activate', () => {
 
 /* ipc actions */
 
+ipcMain.handle(ACTION.getProcessPlatform, () => process.platform);
+
 ipcMain.handle(ACTION.openFolderDialog, async () => {
   if (!mainWindow) return new Error('no window');
 
@@ -176,18 +180,27 @@ ipcMain.handle(ACTION.getChildFolderNames, async (_event, path: string) => {
 
 ipcMain.handle(
   ACTION.runCommand,
-  async (
-    _event,
-    {
-      path,
-      command,
-    }: {
-      path: string;
-      command: string;
-    },
-  ) =>
+  async (_event, { path, command, nvmPath, nodeVersion }: RunCommandOptions) =>
     new Promise((resolve, reject) => {
-      exec(command, { cwd: path }, (error, stdout, stderr) => {
+      let parsedCommand = '';
+
+      if (process.platform === 'win32' && nodeVersion) {
+        // Windows has no source, so you need to crate a new command prompt instance
+        // to change node version and run the command.
+        parsedCommand += `cmd /c "nvm use ${nodeVersion} && ${command}"`;
+      } else {
+        if (nvmPath) {
+          parsedCommand = `source ${nvmPath}/nvm.sh &&`;
+
+          if (nodeVersion) {
+            parsedCommand += `nvm use ${nodeVersion} &&`;
+          }
+        }
+
+        parsedCommand += command;
+      }
+
+      exec(parsedCommand, { cwd: path }, (error, stdout, stderr) => {
         if (error) {
           console.error('error', error);
 

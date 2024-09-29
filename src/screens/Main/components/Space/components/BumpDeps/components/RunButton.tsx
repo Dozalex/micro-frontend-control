@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { DependencyName, DependencyVersion, SpaceConfig } from 'modules';
+import { AppConfigContext, DependencyName, DependencyVersion } from 'modules';
 import {
   getPackageJsonText,
   getProjectPackageFolderNames,
@@ -19,31 +19,34 @@ import {
 import { Button } from 'components/Button';
 
 type Props = {
-  deps: DependencyName[];
+  uniqueDependencyNames: DependencyName[];
   depVersions: Record<DependencyName, DependencyVersion | undefined>;
   projectsForUpdate: string[];
-  packagesFolderName: string;
-  gitConfig: SpaceConfig['gitConfig'];
-  pipelineConfig: SpaceConfig['pipelineConfig'];
-  setStatusByProject: React.Dispatch<
+  setStatusesByProject: React.Dispatch<
+    React.SetStateAction<Record<string, string[] | undefined>>
+  >;
+  setErrorByProject: React.Dispatch<
     React.SetStateAction<Record<string, string | undefined>>
   >;
 };
 
 export const RunButton = ({
-  deps,
+  uniqueDependencyNames,
   depVersions,
   projectsForUpdate,
-  packagesFolderName,
-  gitConfig,
-  pipelineConfig,
-  setStatusByProject,
+  setStatusesByProject,
+  setErrorByProject,
 }: Props) => {
+  const {
+    space: { packagesFolderName, gitConfig, pipelineConfig },
+  } = React.useContext(AppConfigContext);
+
   const [inProgress, setInProgress] = React.useState(false);
 
   const onApply = async () => {
     // reset statuses
-    setStatusByProject({});
+    setStatusesByProject({});
+    setErrorByProject({});
 
     if (!projectsForUpdate.length) {
       await window.electronAPI.showAlert({
@@ -74,7 +77,11 @@ export const RunButton = ({
     await Promise.allSettled(
       projectsForUpdate.map(async path => {
         const changeStatus = (status: string) =>
-          setStatusByProject(prev => ({ ...prev, [path]: status }));
+          setStatusesByProject(prev => {
+            const prevStatuses = prev[path] || [];
+
+            return { ...prev, [path]: [...prevStatuses, status] };
+          });
 
         try {
           changeStatus('changes checking...');
@@ -96,7 +103,7 @@ export const RunButton = ({
             {
               path,
               packageJsonText,
-              deps,
+              deps: uniqueDependencyNames,
               depVersions,
             },
           );
@@ -132,7 +139,7 @@ export const RunButton = ({
                     await replaceDepsInPackageJson({
                       path: packageJsonPath,
                       packageJsonText,
-                      deps,
+                      deps: uniqueDependencyNames,
                       depVersions,
                     });
 
@@ -181,11 +188,10 @@ export const RunButton = ({
 
           changeStatus('error');
 
-          window.electronAPI.showAlert({
-            title: 'Pipeline error',
-            message: `Pipeline has been failed for a project by path ${path}.\n${err}`,
-            type: 'error',
-          });
+          setErrorByProject(prev => ({
+            ...prev,
+            [path]: (err as Error)?.message || JSON.stringify(err),
+          }));
         }
       }),
     );

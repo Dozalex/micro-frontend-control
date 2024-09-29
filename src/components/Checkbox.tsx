@@ -9,7 +9,9 @@ type Props = {
 
 export const Checkbox = ({ checked, label, onChange, disabled }: Props) => (
   <div className='flex'>
-    <label className='flex items-center gap-2 ms-2 text-sm font-medium text-gray-300 enabled:cursor-pointer'>
+    <label
+      className={`flex items-center gap-2 ms-2 text-sm font-medium text-gray-300 ${disabled ? '' : 'cursor-pointer'}`}
+    >
       <input
         type='checkbox'
         value=''

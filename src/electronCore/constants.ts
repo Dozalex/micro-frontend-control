@@ -1,4 +1,5 @@
 export const ACTION = {
+  getProcessPlatform: 'getProcessPlatform',
   openFileDialog: 'openFileDialog',
   openFolderDialog: 'openFolderDialog',
   showAlert: 'showAlert',

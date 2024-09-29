@@ -121,6 +121,23 @@ export const replaceDepsInPackageJson = async ({
   return hasChanges;
 };
 
+/** Get nvm folder path. Available only for Unix-based system */
+export const getNvmPath = async () => {
+  try {
+    if (window.electronAPI.getProcessPlatform() === 'win32') {
+      throw new Error('The command is not allowed on win32');
+    }
+
+    return await window.electronAPI.runCommand({
+      command: 'echo $NVM_DIR',
+    });
+  } catch (err) {
+    console.error('Failed to get NVM path', err);
+
+    throw err;
+  }
+};
+
 /** check an uncommited changes in a current branch */
 export const gitCheckUncommitedChangesInProject = async ({
   path,

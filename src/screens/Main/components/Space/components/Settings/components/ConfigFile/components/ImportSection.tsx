@@ -1,14 +1,12 @@
 import * as React from 'react';
 
-import { SpaceConfig, importSpaceConfig } from 'modules';
+import { importSpaceConfig, AppConfigContext } from 'modules';
 import { Button } from 'components/Button';
 import { Hint } from 'components/Hint';
 
-type Props = {
-  onCreateSpace: (space: SpaceConfig) => void;
-};
+export const ImportSection = () => {
+  const { onCreateSpace } = React.useContext(AppConfigContext);
 
-export const ImportSection = ({ onCreateSpace }: Props) => {
   const onImport = () => {
     importSpaceConfig({ onCreateSpace });
   };
