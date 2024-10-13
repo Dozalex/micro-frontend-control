@@ -52,29 +52,51 @@ export const DependencySettings = () => {
       <Divider />
 
       {dependencyConfig.showLatestDepVersion && (
-        <div>
-          <Input
-            label='Path to request latest dependency version'
-            value={dependencyConfig.latestDepVersionPath}
-            onClick={onChangeLatestDepVersionPath}
-            onKeyUp={e => {
-              if (e.key === 'Enter') {
-                onChangeLatestDepVersionPath();
-              }
-            }}
-            readOnly
-          />
+        <React.Fragment>
+          <div>
+            <Input
+              label='Path to request latest version'
+              value={dependencyConfig.latestDepVersionPath}
+              onClick={onChangeLatestDepVersionPath}
+              onKeyUp={e => {
+                if (e.key === 'Enter') {
+                  onChangeLatestDepVersionPath();
+                }
+              }}
+              readOnly
+            />
 
-          <Hint>
-            The directory from which the latest version request will be
-            executed.
-            <br />
-            It is especially necessary if you have a <strong>
-              private
-            </strong>{' '}
-            registry.
-          </Hint>
-        </div>
+            <Hint>
+              The directory from which the latest version request will be
+              executed.
+              <br />
+              It is especially necessary if you have a <strong>
+                private
+              </strong>{' '}
+              registry.
+            </Hint>
+          </div>
+
+          <div>
+            <Input
+              label='Range prefix of the latest version'
+              value={dependencyConfig.latestVersionRangePrefix}
+              onChange={e =>
+                onChange({
+                  latestVersionRangePrefix: e.target.value,
+                })
+              }
+            />
+
+            <Hint>
+              The prefix which will be added to the latest version when you
+              click the Apply button.
+              <br />
+              Common values are: {'^'}, {'~'}, {'>'}, {'>='} or nothing if you
+              need to apply exact version.
+            </Hint>
+          </div>
+        </React.Fragment>
       )}
     </React.Fragment>
   );

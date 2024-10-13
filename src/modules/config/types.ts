@@ -1,5 +1,9 @@
 export type DependencyConfig = {
   latestDepVersionPath: string;
+  /** Prefix for applying the latest version of dependency.
+   * * ^, ~, >, >=
+   * */
+  latestVersionRangePrefix?: string;
   showLatestDepVersion: boolean;
 };
 

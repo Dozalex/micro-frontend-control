@@ -95,6 +95,9 @@ export const Deps = ({ depVersions, setDepVersions }: Props) => {
                     depName={dep}
                     setDepVersions={setDepVersions}
                     latestDepVersionPath={latestDepVersionPath}
+                    latestVersionRangePrefix={
+                      dependencyConfig.latestVersionRangePrefix
+                    }
                   />
                 )}
 

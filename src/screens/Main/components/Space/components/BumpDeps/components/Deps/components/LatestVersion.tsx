@@ -8,6 +8,7 @@ import { IconButton } from 'components/IconButton';
 
 type Props = {
   latestDepVersionPath: ProjectPath;
+  latestVersionRangePrefix?: string;
   depName: DependencyName;
   setDepVersions: React.Dispatch<
     React.SetStateAction<Record<DependencyName, DependencyVersion | undefined>>
@@ -22,6 +23,7 @@ type Props = {
 export const LatestVersion = ({
   depName,
   latestDepVersionPath,
+  latestVersionRangePrefix,
   setDepVersions,
 }: Props) => {
   const [loading, setLoading] = React.useState(false);
@@ -31,6 +33,13 @@ export const LatestVersion = ({
     () => debounce((f: () => void) => f(), 800),
     [],
   );
+
+  const onApplyLatestVersion = () => {
+    setDepVersions(prev => ({
+      ...prev,
+      [depName]: `${latestVersionRangePrefix}${latestVersion}`,
+    }));
+  };
 
   React.useEffect(() => {
     debounceRequest(() => {
@@ -55,9 +64,7 @@ export const LatestVersion = ({
 
       <IconButton
         icon={ArrowRight}
-        onClick={() =>
-          setDepVersions(prev => ({ ...prev, [depName]: latestVersion }))
-        }
+        onClick={onApplyLatestVersion}
         disabled={!depName || !latestVersion}
       />
     </div>
