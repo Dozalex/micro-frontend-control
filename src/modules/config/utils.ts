@@ -19,6 +19,7 @@ export const normalizeSpaceConfig = (
   dependencyConfig: {
     showLatestDepVersion: space.dependencyConfig?.showLatestDepVersion || false,
     latestDepVersionPath: space.dependencyConfig?.latestDepVersionPath || '',
+    packageManager: space.dependencyConfig?.packageManager || 'yarn',
   },
   dependencyNames: space.dependencyNames || [],
   gitConfig: {

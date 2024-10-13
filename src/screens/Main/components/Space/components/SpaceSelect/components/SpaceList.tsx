@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { SpaceConfig, normalizeSpaceConfig } from 'modules/index';
 
-export type Props = {
+type Props = {
   activeSpaceId?: SpaceConfig['id'];
   spaces: SpaceConfig[];
   onCreateSpace: (space: SpaceConfig) => void;

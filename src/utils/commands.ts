@@ -1,4 +1,9 @@
-import type { DependencyName, DependencyVersion, PackageJson } from 'modules';
+import type {
+  DependencyName,
+  DependencyVersion,
+  PackageJson,
+  PackageManager,
+} from 'modules';
 
 import { replaceVersionInPackageJson } from './versions';
 
@@ -265,17 +270,24 @@ export const gitDeleteBranch = async ({
 /** install dependencies */
 export const installDeps = async ({
   path,
+  packageManager,
 }: {
   // the project root path
   path: string;
+  packageManager: PackageManager;
 }) => {
   try {
-    await window.electronAPI.runCommand({
-      path,
-      command: 'yarn',
-    });
+    let command = '';
+
+    if (packageManager === 'yarn') {
+      command = 'yarn';
+    } else if (packageManager === 'npm') {
+      command = 'npm install';
+    }
+
+    await window.electronAPI.runCommand({ path, command });
   } catch (err) {
-    console.error(`Failed to run yarn by path ${path}`, err);
+    console.error(`Failed to run ${packageManager} by path ${path}`, err);
 
     throw err;
   }
@@ -284,15 +296,22 @@ export const installDeps = async ({
 /** run lint */
 export const runLint = async ({
   path,
+  packageManager,
 }: {
   // the project root path
   path: string;
+  packageManager: PackageManager;
 }) => {
   try {
-    await window.electronAPI.runCommand({
-      path,
-      command: 'yarn lint',
-    });
+    let command = '';
+
+    if (packageManager === 'yarn') {
+      command = 'yarn lint';
+    } else if (packageManager === 'npm') {
+      command = 'npm lint';
+    }
+
+    await window.electronAPI.runCommand({ path, command });
   } catch (err) {
     console.error(`Failed to lint by path ${path}`, err);
 

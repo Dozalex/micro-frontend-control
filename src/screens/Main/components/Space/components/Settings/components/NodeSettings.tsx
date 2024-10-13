@@ -4,10 +4,10 @@ import { Reload } from 'icons';
 import { AppConfigContext } from 'modules';
 import { getNvmPath } from 'utils';
 import { Divider } from 'components/Divider';
-import { Dropdown } from 'components/Dropdown';
 import { Hint } from 'components/Hint';
 import { IconButton } from 'components/IconButton';
 import { Input } from 'components/Input';
+import { Select } from 'components/Select';
 import { Tooltip } from 'components/Tooltip';
 
 export const NodeSettings = () => {
@@ -41,6 +41,15 @@ export const NodeSettings = () => {
         });
     }
   }, [nvmPath]);
+
+  const nodeVersionOptions = React.useMemo(
+    () =>
+      versions.map(version => ({
+        title: version,
+        value: version,
+      })),
+    [versions],
+  );
 
   return (
     <React.Fragment>
@@ -85,48 +94,25 @@ export const NodeSettings = () => {
       <Divider />
 
       <div>
-        <Dropdown
-          hideOnClick
-          placement='bottom-start'
-          minWidth={250}
+        <Select<string | undefined>
+          value={space.nodeVersion}
           onOpen={onGetVersions}
-          renderContent={() =>
-            versionsLoading ? (
-              <div>Loading...</div>
-            ) : (
-              <div className='flex flex-col overflow-auto max-h-80'>
-                {versions.length
-                  ? versions.map(version => (
-                      <button
-                        key={version}
-                        type='button'
-                        onClick={() =>
-                          onUpdateSpace({
-                            nodeVersion: version,
-                          })
-                        }
-                        className={`flex p-3 text-sm text-white hover:bg-sky-800 focus:outline-none focus-visible:bg-sky-900 ${version === space.nodeVersion ? 'bg-sky-700' : ''}`}
-                      >
-                        {version}
-                      </button>
-                    ))
-                  : 'Not found. Check your NVM path.'}
-              </div>
-            )
+          onChange={newValue =>
+            onUpdateSpace({
+              nodeVersion: newValue,
+            })
           }
-        >
-          <div>
-            <Input
-              label='Node version'
-              value={space.nodeVersion}
-              onChange={e =>
-                onUpdateSpace({
-                  nodeVersion: e.target.value,
-                })
-              }
-            />
-          </div>
-        </Dropdown>
+          options={nodeVersionOptions}
+          label='Node version'
+          loading={versionsLoading}
+          minWidth={250}
+          notFoundContent='Not found. Check your NVM path.'
+          onChangeInput={e =>
+            onUpdateSpace({
+              nodeVersion: e.target.value,
+            })
+          }
+        />
 
         <Hint>
           It is required to set the correct node version for a node commands.

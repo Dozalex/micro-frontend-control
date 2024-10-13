@@ -1,9 +1,12 @@
+export type PackageManager = 'yarn' | 'npm';
+
 export type DependencyConfig = {
   latestDepVersionPath: string;
   /** Prefix for applying the latest version of dependency.
    * * ^, ~, >, >=
    * */
   latestVersionRangePrefix?: string;
+  packageManager: PackageManager;
   showLatestDepVersion: boolean;
 };
 

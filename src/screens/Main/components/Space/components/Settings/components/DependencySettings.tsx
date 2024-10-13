@@ -1,10 +1,11 @@
 import * as React from 'react';
 
-import { AppConfigContext, SpaceConfig } from 'modules';
+import { AppConfigContext, SpaceConfig, PackageManager } from 'modules';
 import { Checkbox } from 'components/Checkbox';
 import { Divider } from 'components/Divider';
 import { Hint } from 'components/Hint';
 import { Input } from 'components/Input';
+import { Select, SelectProps } from 'components/Select';
 
 export const DependencySettings = () => {
   const {
@@ -30,8 +31,35 @@ export const DependencySettings = () => {
     onChange({ latestDepVersionPath: path });
   };
 
+  const packageManagerOptions: SelectProps<PackageManager>['options'] =
+    React.useMemo(
+      () => [
+        { title: 'Yarn', value: 'yarn' },
+        { title: 'Npm', value: 'npm' },
+      ],
+      [],
+    );
+
   return (
     <React.Fragment>
+      <div>
+        <Select<PackageManager>
+          value={dependencyConfig.packageManager}
+          onChange={newValue =>
+            onChange({
+              packageManager: newValue,
+            })
+          }
+          options={packageManagerOptions}
+          label='Package manager'
+          minWidth={250}
+        />
+
+        <Hint>
+          Package manager to run your project scripts and install dependencies.
+        </Hint>
+      </div>
+
       <div>
         <Checkbox
           label='Show latest dependency version'

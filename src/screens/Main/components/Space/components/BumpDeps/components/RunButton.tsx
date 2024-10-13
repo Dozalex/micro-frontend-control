@@ -38,7 +38,7 @@ export const RunButton = ({
   setErrorByProject,
 }: Props) => {
   const {
-    space: { packagesFolderName, gitConfig, pipelineConfig },
+    space: { packagesFolderName, gitConfig, pipelineConfig, dependencyConfig },
   } = React.useContext(AppConfigContext);
 
   const [inProgress, setInProgress] = React.useState(false);
@@ -70,6 +70,7 @@ export const RunButton = ({
 
     setInProgress(true);
 
+    const { packageManager } = dependencyConfig;
     const { commitMessage, newBranchName, remoteBranchName } = gitConfig;
     const {
       checkUncommittedChanges,
@@ -177,12 +178,12 @@ export const RunButton = ({
 
           if (makeInstall) {
             changeStatus('dependencies installing...');
-            await installDeps({ path });
+            await installDeps({ path, packageManager });
           }
 
           if (makeLint) {
             changeStatus('lint checking...');
-            await runLint({ path });
+            await runLint({ path, packageManager });
           }
 
           if (makeCommit) {

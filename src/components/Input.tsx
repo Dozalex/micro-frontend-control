@@ -1,10 +1,18 @@
 import * as React from 'react';
 
-type Props = {
+export type InputProps = {
   label?: string;
+  inputClassName?: string;
 } & JSX.IntrinsicElements['input'];
 
-export const Input = ({ label, id, className, value, ...props }: Props) => (
+export const Input = ({
+  label,
+  id,
+  className,
+  value,
+  inputClassName,
+  ...props
+}: InputProps) => (
   <div className={`overflow-hidden ${className || ''}`}>
     {label && (
       <label
@@ -16,7 +24,7 @@ export const Input = ({ label, id, className, value, ...props }: Props) => (
     )}
     <input
       id={id}
-      className='border text-sm rounded-lg block w-full p-2 bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-200 focus:outline-none focus:border-sky-800'
+      className={`border text-sm rounded-lg block w-full p-2 bg-gray-700 border-gray-600 placeholder-gray-400 text-gray-200 focus:outline-none focus:border-sky-800 ${inputClassName || ''}`}
       value={value || ''}
       {...props}
     />
