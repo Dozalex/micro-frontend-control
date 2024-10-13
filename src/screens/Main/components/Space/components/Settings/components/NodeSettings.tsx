@@ -110,7 +110,7 @@ export const NodeSettings = () => {
                         {version}
                       </button>
                     ))
-                  : 'Not found'}
+                  : 'Not found. Check your NVM path.'}
               </div>
             )
           }

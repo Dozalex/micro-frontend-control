@@ -138,8 +138,8 @@ export const getNvmPath = async () => {
   }
 };
 
-/** check an uncommited changes in a current branch */
-export const gitCheckUncommitedChangesInProject = async ({
+/** check an uncommitted changes in a current branch */
+export const gitCheckUncommittedChangesInProject = async ({
   path,
 }: {
   // the project root path
@@ -151,7 +151,10 @@ export const gitCheckUncommitedChangesInProject = async ({
       command: 'git diff --quiet && git diff --cached --quiet',
     });
   } catch (err) {
-    console.error(`Failed to check an uncommited changes by path ${path}`, err);
+    console.error(
+      `Failed to check an uncommitted changes by path ${path}`,
+      err,
+    );
 
     throw err;
   }

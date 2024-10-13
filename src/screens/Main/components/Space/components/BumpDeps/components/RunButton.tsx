@@ -4,7 +4,7 @@ import { AppConfigContext, DependencyName, DependencyVersion } from 'modules';
 import {
   getPackageJsonText,
   getProjectPackageFolderNames,
-  gitCheckUncommitedChangesInProject,
+  gitCheckUncommittedChangesInProject,
   gitCheckoutBranch,
   gitCheckoutNewBranch,
   gitCommitChanges,
@@ -71,7 +71,15 @@ export const RunButton = ({
     setInProgress(true);
 
     const { commitMessage, newBranchName, remoteBranchName } = gitConfig;
-    const { makeCommit, makePush, makeLint } = pipelineConfig;
+    const {
+      checkUncommittedChanges,
+      makeNewBranch,
+      makeCommit,
+      makePush,
+      makeLint,
+      makeInstall,
+      deleteNewBranch,
+    } = pipelineConfig;
 
     // loop through each selected project
     await Promise.allSettled(
@@ -84,15 +92,24 @@ export const RunButton = ({
           });
 
         try {
-          changeStatus('changes checking...');
-          await gitCheckUncommitedChangesInProject({ path });
-
-          changeStatus('git fetch...');
-          await gitFetch({ path });
-
-          changeStatus('create new branch...');
           const currentBranchName = await gitGetCurrentBranchName({ path });
-          await gitCheckoutNewBranch({ path, newBranchName, remoteBranchName });
+
+          if (checkUncommittedChanges) {
+            changeStatus('changes checking...');
+            await gitCheckUncommittedChangesInProject({ path });
+          }
+
+          if (makeNewBranch) {
+            changeStatus('git fetch...');
+            await gitFetch({ path });
+
+            changeStatus('create new branch...');
+            await gitCheckoutNewBranch({
+              path,
+              newBranchName,
+              remoteBranchName,
+            });
+          }
 
           // to check that some changes have been applied for this project
           let hasChanges = false;
@@ -158,8 +175,10 @@ export const RunButton = ({
 
           // all packages json files has been changes here
 
-          changeStatus('dependencies installing...');
-          await installDeps({ path });
+          if (makeInstall) {
+            changeStatus('dependencies installing...');
+            await installDeps({ path });
+          }
 
           if (makeLint) {
             changeStatus('lint checking...');
@@ -173,9 +192,16 @@ export const RunButton = ({
             if (makePush) {
               changeStatus('changes pushing...');
               await gitPushBranch({ path, newBranchName });
-              changeStatus('new branch deletion...');
-              await gitCheckoutBranch({ path, branchName: currentBranchName });
-              await gitDeleteBranch({ path, branchName: newBranchName });
+
+              // checkout and remove new branch
+              if (makeNewBranch && deleteNewBranch) {
+                changeStatus('new branch deletion...');
+                await gitCheckoutBranch({
+                  path,
+                  branchName: currentBranchName,
+                });
+                await gitDeleteBranch({ path, branchName: newBranchName });
+              }
             }
           }
 

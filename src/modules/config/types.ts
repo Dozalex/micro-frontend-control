@@ -14,9 +14,13 @@ export type GitConfig = {
 };
 
 export type PipelineConfig = {
+  checkUncommittedChanges: boolean;
+  makeNewBranch: boolean;
+  makeInstall: boolean;
   makeLint: boolean;
   makeCommit: boolean;
   makePush: boolean;
+  deleteNewBranch: boolean;
 };
 
 export type SpaceConfig = {
