@@ -80,7 +80,7 @@ export const Select = <Value extends SelectAllowedValueType>({
       <div>
         <Input
           label={label}
-          value={selectedOption?.title}
+          value={selectedOption?.title || `${value}`}
           onChange={onChangeInput}
           readOnly={!onChangeInput}
           disabled={disabled}
